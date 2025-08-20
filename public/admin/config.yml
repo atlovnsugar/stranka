@@ -1,0 +1,62 @@
+backend:
+  name: git-gateway
+  branch: main # Branch to update (optional; defaults to master)
+
+media_folder: "public/images"
+public_folder: "/images"
+
+collections:
+  - name: "practice"
+    label: "Practice Info"
+    files:
+      - name: "info"
+        label: "Practice Information"
+        file: "data/practiceInfo.json"
+        fields:
+          - { label: "Name", name: "name", widget: "string" }
+          - { label: "Tagline", name: "tagline", widget: "string" }
+          - { label: "Address", name: "address", widget: "string" }
+          - { label: "City", name: "city", widget: "string" }
+          - { label: "Phone", name: "phone", widget: "string" }
+          - { label: "Email", name: "email", widget: "string" }
+          - { label: "Hours", name: "hours", widget: "list", fields: [
+              { label: "Day", name: "day", widget: "string" },
+              { label: "Time", name: "time", widget: "string" }
+            ]}
+
+  - name: "services"
+    label: "Services"
+    files:
+      - name: "services"
+        label: "Services List"
+        file: "data/services.json"
+        fields:
+          - { label: "Services", name: "services", widget: "list", fields: [
+              { label: "Title", name: "title", widget: "string" },
+              { label: "Description", name: "description", widget: "text" }
+            ]}
+
+  - name: "pricing"
+    label: "Pricing"
+    files:
+      - name: "pricing"
+        label: "Pricing List"
+        file: "data/pricing.json"
+        fields:
+          - { label: "Pricing Items", name: "pricing", widget: "list", fields: [
+              { label: "Service", name: "service", widget: "string" },
+              { label: "Price", name: "price", widget: "string" }
+            ]}
+
+  - name: "articles"
+    label: "Articles"
+    folder: "data/articles"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "ID", name: "id", widget: "number" }
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Excerpt", name: "excerpt", widget: "text" }
+      - { label: "Date", name: "date", widget: "string" }
+      - { label: "Read Time", name: "readTime", widget: "string" }
+      - { label: "Content", name: "content", widget: "markdown" }
