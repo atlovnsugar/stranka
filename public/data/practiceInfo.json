@@ -6,12 +6,33 @@
   "phone": "+420 605 471 740",
   "email": "hello@harmonyspeech.com",
   "hours": [
-    { "day": "Pondělí", "time": "9:00 AM - 5:00 PM" },
-    { "day": "Úterý", "time": "9:00 AM - 5:00 PM" },
-    { "day": "Středa", "time": "9:00 AM - 5:00 PM" },
-    { "day": "Čtvrtek", "time": "9:00 AM - 5:00 PM" },
-    { "day": "Pátek", "time": "9:00 AM - 3:00 PM" },
-    { "day": "Sobota", "time": "Zavřeno" },
-    { "day": "Neděle", "time": "Zavřeno" }
+    {
+      "day": "Pondělí",
+      "time": "9:00 AM - 5:00 PM"
+    },
+    {
+      "day": "Úterý",
+      "time": "9:00 AM - 5:00 PM"
+    },
+    {
+      "day": "Středa",
+      "time": "9:00 AM - 5:00 PM"
+    },
+    {
+      "day": "Čtvrtek",
+      "time": "9:00 AM - 5:00 PM"
+    },
+    {
+      "day": "Pátek",
+      "time": "9:00 AM - 3:00 PM"
+    },
+    {
+      "day": "Sobota",
+      "time": "Zavřeno"
+    },
+    {
+      "day": "Neděle",
+      "time": "Zavřeno"
+    }
   ]
 }
