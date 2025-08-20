@@ -8,7 +8,7 @@
   "hours": [
     {
       "day": "Pondělí",
-      "time": "9:00 AM - 5:00 PM"
+      "time": "9:00 - 15:00"
     },
     {
       "day": "Úterý",
@@ -28,7 +28,7 @@
     },
     {
       "day": "Sobota",
-      "time": "Zavřeno"
+      "time": "Zavřeno (ale jen občas)"
     },
     {
       "day": "Neděle",
