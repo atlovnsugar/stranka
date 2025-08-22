@@ -547,7 +547,7 @@ const App = () => {
             </div>
           </div>
           <div className="hidden md:flex items-center space-x-8">
-            {['Home', 'Services', 'About', 'Pricing', 'Contact', 'Blog'].map((item) => (
+            {['Hlavní stránka', 'Služby', 'O mě', 'Ceník', 'Kontakt', 'Blog'].map((item) => (
               <button
                 key={item}
                 onClick={() => setActiveSection(item.toLowerCase())}
@@ -677,7 +677,7 @@ const App = () => {
                 }
               }}
             >
-              Schedule Consultation
+              Objednejte se na návštěvu
             </button>
             <button
               onClick={() => setActiveSection('services')}
@@ -859,13 +859,13 @@ const App = () => {
             className="text-3xl font-bold mb-4"
             style={{ color: theme.textColor }}
           >
-            Hours & Location
+            Ordinační hodiny a poloha
           </h2>
           <p 
             className="text-lg"
             style={{ color: `${theme.textColor}cc` }}
           >
-            We're here to support your communication journey
+            Něco něco něco
           </p>
         </div>
         <div className="grid lg:grid-cols-2 gap-12">
@@ -1549,6 +1549,7 @@ const App = () => {
           <>
             <Hero />
             <Services />
+            <About />
             <HoursAndLocation />
           </>
         );
@@ -1617,10 +1618,10 @@ const App = () => {
                 className="text-lg font-semibold mb-4"
                 style={{ color: 'white' }}
               >
-                Quick Links
+                Odkazy
               </h3>
               <ul className="space-y-2">
-                {['Home', 'Services', 'About', 'Pricing', 'Contact'].map((item) => (
+                {['Hlavní stránka', 'Služby', 'O mě', 'Ceník', 'Kontakt', 'Blog'].map((item) => (
                   <li key={item}>
                     <button
                       onClick={() => setActiveSection(item.toLowerCase())}
