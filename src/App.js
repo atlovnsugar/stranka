@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { MapPin, Phone, Mail, Clock, Menu, X, CreditCard } from 'lucide-react';
+import { MapPin, Phone, Mail, Clock, Menu, X, CreditCard, ChevronLeft, ChevronRight, X as CloseIcon } from 'lucide-react';
 
 const App = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -10,6 +10,10 @@ const App = () => {
   const [services, setServices] = useState([]); // Přejmenováno z Služby
   const [pricingData, setPricingData] = useState([]); // Přejmenováno z CeníkData
   const [articles, setArticles] = useState([]);
+  const [galleryImages, setGalleryImages] = useState([]);
+  const [currentHeroImageIndex, setCurrentHeroImageIndex] = useState(0);
+  const [isGalleryOpen, setIsGalleryOpen] = useState(false);
+  const [selectedGalleryImage, setSelectedGalleryImage] = useState(null);
 
   // THEME SELECTION - Change this line to switch themes:
   // Options: 'professional', 'minimalist', 'colorful', 'warm', 'modern', 'warmBlue', 'turquoise', 'peaGreen', 'rainbow'
@@ -31,12 +35,14 @@ const App = () => {
         const servicesRes = await fetch('/data/services.json'); // Upraveno
         const pricingRes = await fetch('/data/pricing.json'); // Upraveno
         const articlesRes = await fetch('/data/articles.json');
+        const galleryRes = await fetch('/data/gallery.json');
         setPracticeInfo(await practiceInfoRes.json());
         setServices(await servicesRes.json()); // Upraveno
         setPricingData(await pricingRes.json()); // Upraveno
         setArticles(await articlesRes.json());
+        setGalleryImages(await galleryRes.json());
       } catch (error) {
-        console.error('Error loading data:', error);
+        console.error('Error loading ', error);
       }
     };
     loadData();
@@ -496,11 +502,23 @@ const App = () => {
       </svg>
     `);
     return {
-      backgroundImage: `url("data:image/svg+xml,${flowerSVG}")`,
+      backgroundImage: `url("image/svg+xml,${flowerSVG}")`,
       backgroundSize: '150px 150px',
       backgroundAttachment: 'fixed'
     };
   };
+
+  // Cycle hero images
+  useEffect(() => {
+    if (practiceInfo.heroImages && practiceInfo.heroImages.length > 1) {
+      const interval = setInterval(() => {
+        setCurrentHeroImageIndex((prevIndex) => 
+          (prevIndex + 1) % practiceInfo.heroImages.length
+        );
+      }, 5000); // Change image every 5 seconds
+      return () => clearInterval(interval);
+    }
+  }, [practiceInfo.heroImages]);
 
   const Navigation = () => (
     <nav className={`shadow-lg sticky top-0 z-50`} style={{ backgroundColor: theme.headerBg }}>
@@ -530,7 +548,8 @@ const App = () => {
               { label: 'O mě', key: 'about' },
               { label: 'Ceník', key: 'pricing' },
               { label: 'Kontakt', key: 'contact' },
-              { label: 'Blog', key: 'blog' }
+              { label: 'Blog', key: 'blog' },
+              { label: 'Galerie', key: 'gallery' }
             ].map((item) => (
               <button
                 key={item.key} // Použijeme unikátní klíč
@@ -566,7 +585,8 @@ const App = () => {
               { label: 'O mě', key: 'about' },
               { label: 'Ceník', key: 'pricing' },
               { label: 'Kontakt', key: 'contact' },
-              { label: 'Blog', key: 'blog' }
+              { label: 'Blog', key: 'blog' },
+              { label: 'Galerie', key: 'gallery' }
             ].map((item) => (
               <button
                 key={item.key}
@@ -594,13 +614,22 @@ const App = () => {
       className="relative py-16 overflow-hidden"
       style={{ backgroundColor: theme.backgroundColor, ...getFlowerPattern() }}
     >
-      {/* Background image */}
+      {/* Background images with fade transition */}
       <div className="absolute inset-0 z-0 overflow-hidden">
-        <img 
-          src="/images/hero-background.jpg" // Cesta k obrázku v public/images
-          alt="Hero Background" 
-          className="w-full h-full object-cover opacity-20"
-        />
+        {practiceInfo.heroImages && practiceInfo.heroImages.length > 0 && (
+          <>
+            {practiceInfo.heroImages.map((image, index) => (
+              <img 
+                key={index}
+                src={`/images/${image}`} 
+                alt={`Hero Background ${index + 1}`}
+                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
+                  index === currentHeroImageIndex ? 'opacity-20' : 'opacity-0'
+                }`}
+              />
+            ))}
+          </>
+        )}
       </div>
       
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -608,13 +637,13 @@ const App = () => {
           className="text-4xl md:text-6xl font-bold mb-6"
           style={{ color: theme.textColor }}
         >
-          Logopedie Petra Tabačíková
+          {practiceInfo.title || 'Logopedie Petra Tabačíková'}
         </h1>
         <p 
           className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto"
           style={{ color: `${theme.textColor}cc` }}
         >
-          Specializovaná logopedická péče pro děti i dospělé
+          {practiceInfo.subtitle || 'Specializovaná logopedická péče pro děti i dospělé'}
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <button
@@ -681,7 +710,7 @@ const App = () => {
             className="text-lg max-w-2xl mx-auto"
             style={{ color: `${theme.textColor}cc` }}
           >
-            Sem něco napsat o službách. Nebo o něčem jiném.
+            {practiceInfo.servicesDescription || 'Sem něco napsat o službách. Nebo o něčem jiném.'}
           </p>
         </div>
         <div className="grid md:grid-cols-2 gap-8">
@@ -728,8 +757,7 @@ const App = () => {
             className="text-lg max-w-3xl mx-auto mb-8"
             style={{ color: `${theme.textColor}cc` }}
           >
-            Všechny naše služby jsou poskytovány v soukromé praxi. Logoped nemá smlouvu s pojišťovnami, 
-            proto je nutné platit v hotovosti nebo bankovním převodem.
+            {practiceInfo.pricingDescription || 'Všechny naše služby jsou poskytovány v soukromé praxi. Logoped nemá smlouvu s pojišťovnami, proto je nutné platit v hotovosti nebo bankovním převodem.'}
           </p>
         </div>
         <div className="flex justify-center">
@@ -801,9 +829,7 @@ const App = () => {
               style={{ color: theme.primaryColor }}
             />
             <p style={{ color: theme.textColor }}>
-              <span className="font-semibold">Platba:</span> Platby jsou přijímány v hotovosti nebo bankovním převodem. 
-              Faktury jsou k dispozici na vyžádání. V případě zrušení nebo změny termínu prosím kontaktujte nás 
-              nejméně 24 hodin předem, jinak bude účtován plný poplatek.
+              <span className="font-semibold">Platba:</span> {practiceInfo.paymentInfo || 'Platby jsou přijímány v hotovosti nebo bankovním převodem. Faktury jsou k dispozici na vyžádání. V případě zrušení nebo změny termínu prosím kontaktujte nás nejméně 24 hodin předem, jinak bude účtován plný poplatek.'}
             </p>
           </div>
         </div>
@@ -829,7 +855,7 @@ const App = () => {
             className="text-lg"
             style={{ color: `${theme.textColor}cc` }}
           >
-            Něco něco něco
+            {practiceInfo.hoursLocationDescription || 'Něco něco něco'}
           </p>
         </div>
         <div className="grid lg:grid-cols-2 gap-12">
@@ -1173,7 +1199,7 @@ const App = () => {
               className="text-lg"
               style={{ color: `${theme.textColor}cc` }}
             >
-              Sem něco napsat
+              {practiceInfo.blogDescription || 'Sem něco napsat'}
             </p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -1259,7 +1285,7 @@ const App = () => {
             className="text-lg max-w-3xl mx-auto"
             style={{ color: `${theme.textColor}cc` }}
           >
-            Sem něco napsat
+            {practiceInfo.aboutDescription || 'Sem něco napsat'}
           </p>
         </div>
         <div 
@@ -1272,11 +1298,21 @@ const App = () => {
           <div className="flex flex-col md:flex-row gap-8">
             <div className="md:w-1/3 flex justify-center">
               <div className="relative">
-                <img
-                  src="/images/about-me.jpg" // Cesta k obrázku v public/images
-                  alt="Petra Tabačíková - Logoped"
-                  className="rounded-lg shadow-md w-full max-w-sm object-cover h-auto"
-                />
+                {/* Obrázek z JSON */}
+                {practiceInfo.aboutImage ? (
+                  <img
+                    src={`/images/${practiceInfo.aboutImage}`}
+                    alt={practiceInfo.aboutImageAlt || "O mně - Logoped"}
+                    className="rounded-lg shadow-md w-full max-w-sm object-cover h-auto"
+                  />
+                ) : (
+                  <div 
+                    className="rounded-lg shadow-md w-full max-w-sm h-64 flex items-center justify-center"
+                    style={{ backgroundColor: theme.accentColor }}
+                  >
+                    <span style={{ color: theme.textColor }}>Obrázek není k dispozici</span>
+                  </div>
+                )}
                 <div 
                   className="absolute inset-0 rounded-lg"
                   style={{ 
@@ -1290,40 +1326,8 @@ const App = () => {
                 <p 
                   className="mb-6"
                   style={{ color: `${theme.textColor}cc` }}
-                >
-                  At {practiceInfo.name}, we believe that effective communication is fundamental to human connection and personal success. 
-                  Our licensed speech-language pathologists are committed to providing compassionate, evidence-based care tailored to each 
-                  individual's unique needs and goals.
-                </p>
-                <p 
-                  className="mb-6"
-                  style={{ color: `${theme.textColor}cc` }}
-                >
-                  With over 15 years of combined experience, our team specializes in treating a wide range of communication disorders 
-                  including articulation delays, language disorders, voice disorders, and fluency disorders. We work collaboratively 
-                  with families, educators, and healthcare professionals to ensure comprehensive care.
-                </p>
-                <p 
-                  style={{ color: `${theme.textColor}cc` }}
-                >
-                  Our approach combines clinical expertise with a deep understanding of the emotional and social aspects of communication. 
-                  We create a supportive environment where clients feel empowered to develop their communication skills and build confidence.
-                </p>
-                <div 
-                  className="mt-8 pt-6 border-t"
-                  style={{ borderColor: `${theme.accentColor}20` }}
-                >
-                  <h3 
-                    className="text-xl font-semibold mb-4"
-                    style={{ color: theme.textColor }}
-                  >
-                    Meet Our Lead Therapist
-                  </h3>
-                  <p style={{ color: `${theme.textColor}cc` }}>
-                    Sarah Johnson, M.S., CCC-SLP is a certified speech-language pathologist with over 15 years of experience. 
-                    She specializes in pediatric speech therapy and has helped hundreds of children achieve their communication goals.
-                  </p>
-                </div>
+                  dangerouslySetInnerHTML={{ __html: practiceInfo.aboutContent || 'Obsah sekce O mně není k dispozici.' }}
+                />
               </div>
             </div>
           </div>
@@ -1350,7 +1354,7 @@ const App = () => {
             className="text-lg"
             style={{ color: `${theme.textColor}cc` }}
           >
-            Něco sem napsat
+            {practiceInfo.contactDescription || 'Něco sem napsat'}
           </p>
         </div>
         <div className="grid lg:grid-cols-2 gap-12">
@@ -1472,7 +1476,7 @@ const App = () => {
               className="mb-6"
               style={{ color: `${theme.textColor}cc` }}
             >
-              Pro objednání stačí zavolat na naše telefonní číslo a domluvit si termín. První návštěva trvá hodinu a následné 30 minut.
+              {practiceInfo.bookingInfo || 'Pro objednání stačí zavolat na naše telefonní číslo a domluvit si termín. První návštěva trvá hodinu a následné 30 minut.'}
             </p>
             <div className="space-y-4">
               <div className="flex items-center">
@@ -1531,6 +1535,73 @@ const App = () => {
     </div>
   );
 
+  // Gallery component
+  const Gallery = () => (
+    <div 
+      className="py-16"
+      style={{ backgroundColor: theme.backgroundColor, ...getFlowerPattern() }}
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-12">
+          <h2 
+            className="text-3xl font-bold mb-4"
+            style={{ color: theme.textColor }}
+          >
+            Galerie
+          </h2>
+          <p 
+            className="text-lg"
+            style={{ color: `${theme.textColor}cc` }}
+          >
+            {practiceInfo.galleryDescription || 'Prohlédněte si naše obrázky'}
+          </p>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {galleryImages.map((image, index) => (
+            <div 
+              key={index} 
+              className="aspect-square overflow-hidden rounded-lg cursor-pointer"
+              onClick={() => {
+                setSelectedGalleryImage(image);
+                setIsGalleryOpen(true);
+              }}
+            >
+              <img 
+                src={`/images/gallery/${image.filename}`} 
+                alt={image.alt || `Galerie obrázek ${index + 1}`}
+                className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Modal for gallery image viewer */}
+      {isGalleryOpen && selectedGalleryImage && (
+        <div className="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center p-4">
+          <div className="relative max-w-4xl max-h-full">
+            <button
+              className="absolute top-4 right-4 text-white z-10"
+              onClick={() => setIsGalleryOpen(false)}
+            >
+              <CloseIcon size={32} />
+            </button>
+            <img 
+              src={`/images/gallery/${selectedGalleryImage.filename}`} 
+              alt={selectedGalleryImage.alt || 'Galerie obrázek'}
+              className="max-w-full max-h-full object-contain"
+            />
+            {selectedGalleryImage.caption && (
+              <div className="absolute bottom-4 left-0 right-0 text-center text-white bg-black bg-opacity-50 p-2">
+                {selectedGalleryImage.caption}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+
   const renderContent = () => {
     // Nyní porovnáváme interní klíče (anglicky)
     switch (activeSection) {
@@ -1555,6 +1626,8 @@ const App = () => {
         return <Contact />;
       case 'blog': // Interní klíč pro Blog
         return <Blog />;
+      case 'gallery': // Interní klíč pro Galerie
+        return <Gallery />;
       default:
         return (
           <>
@@ -1617,7 +1690,8 @@ const App = () => {
                   { label: 'O mě', key: 'about' },
                   { label: 'Ceník', key: 'pricing' },
                   { label: 'Kontakt', key: 'contact' },
-                  { label: 'Blog', key: 'blog' }
+                  { label: 'Blog', key: 'blog' },
+                  { label: 'Galerie', key: 'gallery' }
                 ].map((item) => (
                   <li key={item.key}>
                     <button
