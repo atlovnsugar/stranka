@@ -594,7 +594,103 @@ const App = () => {
       className="relative py-16 overflow-hidden"
       style={{ backgroundColor: theme.backgroundColor, ...getFlowerPattern() }}
     >
-      {/* ... (Hero komponenta zůstává stejná) */}
+      {/* Background image gallery */}
+      <div className="absolute inset-0 z-0">
+        <div className="grid grid-cols-3 grid-rows-2 h-full w-full">
+          {[1, 2, 3, 4, 5, 6].map((item) => (
+            <div 
+              key={item} 
+              className="relative overflow-hidden"
+              style={{ opacity: 0.3 }}
+            >
+              <img
+                src={`https://placehold.co/600x400/${theme.primaryColor.replace('#', '')}/ffffff?text=Speech+Therapy+${item}`}
+                alt={`Speech therapy ${item}`}
+                className="w-full h-full object-cover"
+              />
+              <div 
+                className="absolute inset-0"
+                style={{ 
+                  backgroundColor: theme.primaryColor,
+                  opacity: 0.2
+                }}
+              ></div>
+            </div>
+          ))}
+        </div>
+        {/* Overlay gradient for better text visibility */}
+        <div 
+          className="absolute inset-0"
+          style={{
+            background: `linear-gradient(135deg, ${theme.backgroundColor}ee 0%, ${theme.primaryColor}44 50%, ${theme.secondaryColor}44 100%)`
+          }}
+        ></div>
+      </div>
+      {/* Content */}
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center">
+          <h1 
+            className="text-4xl md:text-6xl font-bold mb-6"
+            style={{ color: theme.textColor }}
+          >
+            {practiceInfo.name}
+          </h1>
+          <p 
+            className="text-xl mb-8 max-w-3xl mx-auto"
+            style={{ color: `${theme.textColor}cc` }}
+          >
+            {practiceInfo.tagline}
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <button
+              onClick={() => setActiveSection('Kontakt')}
+              className={`px-8 py-3 rounded-lg font-semibold transition-colors ${
+                theme.buttonStyle === 'solid' 
+                  ? 'text-white' 
+                  : 'border-2'
+              }`}
+              style={{
+                backgroundColor: theme.buttonStyle === 'solid' ? theme.primaryColor : 'transparent',
+                borderColor: theme.buttonStyle === 'outline' ? theme.primaryColor : 'transparent',
+                color: theme.buttonStyle === 'outline' ? theme.primaryColor : 'white'
+              }}
+              onMouseOver={(e) => {
+                if (theme.buttonStyle === 'solid') {
+                  e.target.style.backgroundColor = theme.secondaryColor;
+                } else {
+                  e.target.style.backgroundColor = `${theme.primaryColor}20`;
+                }
+              }}
+              onMouseOut={(e) => {
+                if (theme.buttonStyle === 'solid') {
+                  e.target.style.backgroundColor = theme.primaryColor;
+                } else {
+                  e.target.style.backgroundColor = 'transparent';
+                }
+              }}
+            >
+              Objednejte se na návštěvu
+            </button>
+            <button
+              onClick={() => setActiveSection('Služby')}
+              className="border-2 px-8 py-3 rounded-lg font-semibold transition-colors"
+              style={{
+                borderColor: theme.primaryColor,
+                color: theme.primaryColor,
+                backgroundColor: 'transparent'
+              }}
+              onMouseOver={(e) => {
+                e.target.style.backgroundColor = `${theme.primaryColor}20`;
+              }}
+              onMouseOut={(e) => {
+                e.target.style.backgroundColor = 'transparent';
+              }}
+            >
+              Služby
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 
