@@ -10,5 +10,9 @@
   {
     "service": "Online konzultace (30 minut)",
     "price": "700 Kč"
+  },
+  {
+    "service": "Výpis z dokumentace, zprávy, potvrzení správné výslovnosti",
+    "price": "300 Kč"
   }
 ]
