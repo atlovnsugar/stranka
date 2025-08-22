@@ -44,8 +44,417 @@ const App = () => {
 
   // Theme definitions
   const themes = {
-    // ... (všechny definice motivů zůstávají stejné)
-    // ... (pro stručnost nejsou zde znovu zahrnuty)
+    // Original themes
+    professional: {
+      primary: 'blue',
+      primaryColor: '#3b82f6',
+      secondaryColor: '#1e40af',
+      backgroundColor: '#f8fafc',
+      textColor: '#1e293b',
+      accentColor: '#60a5fa',
+      headerBg: 'white',
+      cardBg: 'white',
+      footerBg: '#0f172a',
+      buttonStyle: 'solid'
+    },
+    minimalist: {
+      primary: 'gray',
+      primaryColor: '#64748b',
+      secondaryColor: '#334155',
+      backgroundColor: '#ffffff',
+      textColor: '#0f172a',
+      accentColor: '#94a3b8',
+      headerBg: 'white',
+      cardBg: 'white',
+      footerBg: '#0f172a',
+      buttonStyle: 'outline'
+    },
+    colorful: {
+      primary: 'purple',
+      primaryColor: '#8b5cf6',
+      secondaryColor: '#7c3aed',
+      backgroundColor: '#f5f3ff',
+      textColor: '#1e1b4b',
+      accentColor: '#c4b5fd',
+      headerBg: 'white',
+      cardBg: 'white',
+      footerBg: '#312e81',
+      buttonStyle: 'solid'
+    },
+    warm: {
+      primary: 'amber',
+      primaryColor: '#f59e0b',
+      secondaryColor: '#d97706',
+      backgroundColor: '#fffbeb',
+      textColor: '#7c2d12',
+      accentColor: '#fcd34d',
+      headerBg: 'white',
+      cardBg: 'white',
+      footerBg: '#7c2d12',
+      buttonStyle: 'solid'
+    },
+    modern: {
+      primary: 'teal',
+      primaryColor: '#0d9488',
+      secondaryColor: '#115e59',
+      backgroundColor: '#f0fdfa',
+      textColor: '#0f172a',
+      accentColor: '#5eead4',
+      headerBg: 'white',
+      cardBg: 'white',
+      footerBg: '#0f172a',
+      buttonStyle: 'solid'
+    },
+    warmBlue: {
+      primary: 'warmBlue',
+      primaryColor: '#60a5fa',
+      secondaryColor: '#1d4ed8',
+      backgroundColor: '#eff6ff',
+      textColor: '#1e3a8a',
+      accentColor: '#93c5fd',
+      headerBg: 'white',
+      cardBg: 'white',
+      footerBg: '#1e3a8a',
+      buttonStyle: 'solid'
+    },
+    turquoise: {
+      primary: 'turquoise',
+      primaryColor: '#06b6d4',
+      secondaryColor: '#0e7490',
+      backgroundColor: '#f0fdfa',
+      textColor: '#083344',
+      accentColor: '#67e8f9',
+      headerBg: 'white',
+      cardBg: 'white',
+      footerBg: '#083344',
+      buttonStyle: 'solid'
+    },
+    peaGreen: {
+      primary: 'peaGreen',
+      primaryColor: '#84cc16',
+      secondaryColor: '#3f6212',
+      backgroundColor: '#f7fee7',
+      textColor: '#1a2e05',
+      accentColor: '#bef264',
+      headerBg: 'white',
+      cardBg: 'white',
+      footerBg: '#1a2e05',
+      buttonStyle: 'solid'
+    },
+    rainbow: {
+      primary: 'rainbow',
+      primaryColor: '#ec4899',
+      secondaryColor: '#7e22ce',
+      backgroundColor: '#fdf2f8',
+      textColor: '#581c87',
+      accentColor: '#f472b6',
+      headerBg: 'white',
+      cardBg: 'white',
+      footerBg: '#581c87',
+      buttonStyle: 'solid'
+    },
+    // High contrast versions
+    professionalContrast: {
+      primary: 'blue',
+      primaryColor: '#1d4ed8',
+      secondaryColor: '#000000',
+      backgroundColor: '#ffffff',
+      textColor: '#000000',
+      accentColor: '#3b82f6',
+      headerBg: '#000000',
+      cardBg: '#ffffff',
+      footerBg: '#000000',
+      buttonStyle: 'solid'
+    },
+    minimalistContrast: {
+      primary: 'gray',
+      primaryColor: '#000000',
+      secondaryColor: '#000000',
+      backgroundColor: '#ffffff',
+      textColor: '#000000',
+      accentColor: '#64748b',
+      headerBg: '#ffffff',
+      cardBg: '#ffffff',
+      footerBg: '#000000',
+      buttonStyle: 'outline'
+    },
+    colorfulContrast: {
+      primary: 'purple',
+      primaryColor: '#6b21a8',
+      secondaryColor: '#000000',
+      backgroundColor: '#ffffff',
+      textColor: '#000000',
+      accentColor: '#8b5cf6',
+      headerBg: '#ffffff',
+      cardBg: '#ffffff',
+      footerBg: '#000000',
+      buttonStyle: 'solid'
+    },
+    warmContrast: {
+      primary: 'amber',
+      primaryColor: '#b45309',
+      secondaryColor: '#000000',
+      backgroundColor: '#ffffff',
+      textColor: '#000000',
+      accentColor: '#f59e0b',
+      headerBg: '#ffffff',
+      cardBg: '#ffffff',
+      footerBg: '#000000',
+      buttonStyle: 'solid'
+    },
+    modernContrast: {
+      primary: 'teal',
+      primaryColor: '#0f766e',
+      secondaryColor: '#000000',
+      backgroundColor: '#ffffff',
+      textColor: '#000000',
+      accentColor: '#0d9488',
+      headerBg: '#ffffff',
+      cardBg: '#ffffff',
+      footerBg: '#000000',
+      buttonStyle: 'solid'
+    },
+    warmBlueContrast: {
+      primary: 'warmBlue',
+      primaryColor: '#1d4ed8',
+      secondaryColor: '#000000',
+      backgroundColor: '#ffffff',
+      textColor: '#000000',
+      accentColor: '#60a5fa',
+      headerBg: '#ffffff',
+      cardBg: '#ffffff',
+      footerBg: '#000000',
+      buttonStyle: 'solid'
+    },
+    turquoiseContrast: {
+      primary: 'turquoise',
+      primaryColor: '#0891b2',
+      secondaryColor: '#000000',
+      backgroundColor: '#ffffff',
+      textColor: '#000000',
+      accentColor: '#06b6d4',
+      headerBg: '#ffffff',
+      cardBg: '#ffffff',
+      footerBg: '#000000',
+      buttonStyle: 'solid'
+    },
+    peaGreenContrast: {
+      primary: 'peaGreen',
+      primaryColor: '#365314',
+      secondaryColor: '#000000',
+      backgroundColor: '#ffffff',
+      textColor: '#000000',
+      accentColor: '#84cc16',
+      headerBg: '#ffffff',
+      cardBg: '#ffffff',
+      footerBg: '#000000',
+      buttonStyle: 'solid'
+    },
+    rainbowContrast: {
+      primary: 'rainbow',
+      primaryColor: '#be185d',
+      secondaryColor: '#000000',
+      backgroundColor: '#ffffff',
+      textColor: '#000000',
+      accentColor: '#ec4899',
+      headerBg: '#ffffff',
+      cardBg: '#ffffff',
+      footerBg: '#000000',
+      buttonStyle: 'solid'
+    },
+    // Darker background variations
+    peaGreen1: {
+      primary: 'peaGreen',
+      primaryColor: '#84cc16',
+      secondaryColor: '#3f6212',
+      backgroundColor: '#e6fcc0',
+      textColor: '#1a2e05',
+      accentColor: '#bef264',
+      headerBg: 'white',
+      cardBg: 'white',
+      footerBg: '#1a2e05',
+      buttonStyle: 'solid'
+    },
+    peaGreen2: {
+      primary: 'peaGreen',
+      primaryColor: '#84cc16',
+      secondaryColor: '#3f6212',
+      backgroundColor: '#ffedd5',
+      textColor: '#1a2e05',
+      accentColor: '#bef264',
+      headerBg: 'white',
+      cardBg: 'white',
+      footerBg: '#1a2e05',
+      buttonStyle: 'solid'
+    },
+    peaGreen3: {
+      primary: 'peaGreen',
+      primaryColor: '#84cc16',
+      secondaryColor: '#3f6212',
+      backgroundColor: '#d9f99d',
+      textColor: '#1a2e05',
+      accentColor: '#84cc16',
+      headerBg: 'white',
+      cardBg: 'white',
+      footerBg: '#1a2e05',
+      buttonStyle: 'solid'
+    },
+    peaGreen4: {
+      primary: 'peaGreen',
+      primaryColor: '#84cc16',
+      secondaryColor: '#3f6212',
+      backgroundColor: '#bef264',
+      textColor: '#1a2e05',
+      accentColor: '#84cc16',
+      headerBg: 'white',
+      cardBg: 'white',
+      footerBg: '#1a2e05',
+      buttonStyle: 'solid'
+    },
+    rainbow1: {
+      primary: 'rainbow',
+      primaryColor: '#ec4899',
+      secondaryColor: '#7e22ce',
+      backgroundColor: '#fce7f3',
+      textColor: '#581c87',
+      accentColor: '#f472b6',
+      headerBg: 'white',
+      cardBg: 'white',
+      footerBg: '#581c87',
+      buttonStyle: 'solid'
+    },
+    rainbow2: {
+      primary: 'rainbow',
+      primaryColor: '#ec4899',
+      secondaryColor: '#7e22ce',
+      backgroundColor: '#fbcfe8',
+      textColor: '#581c87',
+      accentColor: '#f472b6',
+      headerBg: 'white',
+      cardBg: 'white',
+      footerBg: '#581c87',
+      buttonStyle: 'solid'
+    },
+    rainbow3: {
+      primary: 'rainbow',
+      primaryColor: '#ec4899',
+      secondaryColor: '#7e22ce',
+      backgroundColor: '#f9a8d4',
+      textColor: '#581c87',
+      accentColor: '#f472b6',
+      headerBg: 'white',
+      cardBg: 'white',
+      footerBg: '#581c87',
+      buttonStyle: 'solid'
+    },
+    rainbow4: {
+      primary: 'rainbow',
+      primaryColor: '#ec4899',
+      secondaryColor: '#7e22ce',
+      backgroundColor: '#f472b6',
+      textColor: '#581c87',
+      accentColor: '#ec4899',
+      headerBg: 'white',
+      cardBg: 'white',
+      footerBg: '#581c87',
+      buttonStyle: 'solid'
+    },
+    warm1: {
+      primary: 'amber',
+      primaryColor: '#f59e0b',
+      secondaryColor: '#d97706',
+      backgroundColor: '#fff7ed',
+      textColor: '#7c2d12',
+      accentColor: '#fcd34d',
+      headerBg: 'white',
+      cardBg: 'white',
+      footerBg: '#7c2d12',
+      buttonStyle: 'solid'
+    },
+    warm2: {
+      primary: 'amber',
+      primaryColor: '#f59e0b',
+      secondaryColor: '#d97706',
+      backgroundColor: '#ffedd5',
+      textColor: '#7c2d12',
+      accentColor: '#fcd34d',
+      headerBg: 'white',
+      cardBg: 'white',
+      footerBg: '#7c2d12',
+      buttonStyle: 'solid'
+    },
+    warm3: {
+      primary: 'amber',
+      primaryColor: '#f59e0b',
+      secondaryColor: '#d97706',
+      backgroundColor: '#fed7aa',
+      textColor: '#7c2d12',
+      accentColor: '#f59e0b',
+      headerBg: 'white',
+      cardBg: 'white',
+      footerBg: '#7c2d12',
+      buttonStyle: 'solid'
+    },
+    warm4: {
+      primary: 'amber',
+      primaryColor: '#f59e0b',
+      secondaryColor: '#d97706',
+      backgroundColor: '#fcd34d',
+      textColor: '#7c2d12',
+      accentColor: '#f59e0b',
+      headerBg: 'white',
+      cardBg: 'white',
+      footerBg: '#7c2d12',
+      buttonStyle: 'solid'
+    },
+    colorful1: {
+      primary: 'purple',
+      primaryColor: '#8b5cf6',
+      secondaryColor: '#7c3aed',
+      backgroundColor: '#ede9fe',
+      textColor: '#1e1b4b',
+      accentColor: '#c4b5fd',
+      headerBg: 'white',
+      cardBg: 'white',
+      footerBg: '#312e81',
+      buttonStyle: 'solid'
+    },
+    colorful2: {
+      primary: 'purple',
+      primaryColor: '#8b5cf6',
+      secondaryColor: '#7c3aed',
+      backgroundColor: '#ddd6fe',
+      textColor: '#1e1b4b',
+      accentColor: '#c4b5fd',
+      headerBg: 'white',
+      cardBg: 'white',
+      footerBg: '#312e81',
+      buttonStyle: 'solid'
+    },
+    colorful3: {
+      primary: 'purple',
+      primaryColor: '#8b5cf6',
+      secondaryColor: '#7c3aed',
+      backgroundColor: '#c4b5fd',
+      textColor: '#1e1b4b',
+      accentColor: '#8b5cf6',
+      headerBg: 'white',
+      cardBg: 'white',
+      footerBg: '#312e81',
+      buttonStyle: 'solid'
+    },
+    colorful4: {
+      primary: 'purple',
+      primaryColor: '#8b5cf6',
+      secondaryColor: '#7c3aed',
+      backgroundColor: '#a78bfa',
+      textColor: '#1e1b4b',
+      accentColor: '#8b5cf6',
+      headerBg: 'white',
+      cardBg: 'white',
+      footerBg: '#312e81',
+      buttonStyle: 'solid'
+    }
   };
 
   // Get theme with blue intensity adjustment for peaGreen1 and peaGreen2
@@ -152,7 +561,7 @@ const App = () => {
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3" style={{ backgroundColor: theme.headerBg, borderTop: `1px solid ${theme.accentColor}20` }}>
             {/* Stejná logika pro mobilní menu */}
             {[
-              { label: 'Domácí stránka', key: 'home' }, // Poznámka: 'Domácí stránka' vs 'Hlavní stránka' - můžete sjednotit
+              { label: 'Hlavní stránka', key: 'home' },
               { label: 'Služby', key: 'services' },
               { label: 'O mě', key: 'about' },
               { label: 'Ceník', key: 'pricing' },
