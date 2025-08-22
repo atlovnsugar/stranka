@@ -1414,7 +1414,7 @@ const App = () => {
                 className="text-2xl font-semibold mb-6"
                 style={{ color: theme.textColor }}
               >
-                Get in Touch
+                Kontaktujte mě
               </h3>
               <div className="space-y-6">
                 <div className="flex items-start">
@@ -1447,7 +1447,7 @@ const App = () => {
                       className="font-medium"
                       style={{ color: theme.textColor }}
                     >
-                      Phone
+                      Telefon
                     </h4>
                     <p style={{ color: `${theme.textColor}cc` }}>
                       {practiceInfo.phone}
@@ -1487,7 +1487,7 @@ const App = () => {
                 className="text-2xl font-semibold mb-4 p-6 pb-0"
                 style={{ color: theme.textColor }}
               >
-                Lokace kanceláře
+                Lokace ordinace
               </h3>
               <div className="rounded-lg overflow-hidden">
                 <iframe
@@ -1752,6 +1752,7 @@ const App = () => {
                 <p>{practiceInfo.city}</p>
                 <p>{practiceInfo.phone}</p>
                 <p>{practiceInfo.email}</p>
+                <p>IČO: 75086301</p>
               </div>
             </div>
           </div>
@@ -1760,6 +1761,8 @@ const App = () => {
             style={{ borderColor: '#334155', color: '#94a3b8' }}
           >
             <p>&copy; 2025 {practiceInfo.name}</p>
+            <p>Všechny práva vyhrazena.</p>
+            <p>Vytvořil Vojtěch Tabačík</p>
           </div>
         </div>
       </footer>
