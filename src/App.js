@@ -3,11 +3,11 @@ import { MapPin, Phone, Mail, Clock, Menu, X, CreditCard } from 'lucide-react';
 
 const App = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState('home');
+  const [activeSection, setActiveSection] = useState('Hlavní stránka');
   const [selectedArticle, setSelectedArticle] = useState(null);
   const [practiceInfo, setPracticeInfo] = useState({});
-  const [services, setServices] = useState([]);
-  const [pricingData, setPricingData] = useState([]);
+  const [Služby, setSluzby] = useState([]);
+  const [CeníkData, setCeníkData] = useState([]);
   const [articles, setArticles] = useState([]);
 
   // THEME SELECTION - Change this line to switch themes:
@@ -25,13 +25,13 @@ const App = () => {
     const loadData = async () => {
       try {
         const practiceInfoRes = await fetch('/data/practiceInfo.json');
-        const servicesRes = await fetch('/data/services.json');
-        const pricingRes = await fetch('/data/pricing.json');
+        const SluzbyRes = await fetch('/data/services.json');
+        const CeníkRes = await fetch('/data/pricing.json');
         const articlesRes = await fetch('/data/articles.json');
         
         setPracticeInfo(await practiceInfoRes.json());
-        setServices(await servicesRes.json());
-        setPricingData(await pricingRes.json());
+        setSluzby(await SluzbyRes.json());
+        setCeníkData(await CeníkRes.json());
         setArticles(await articlesRes.json());
       } catch (error) {
         console.error('Error loading data:', error);
@@ -651,7 +651,7 @@ const App = () => {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
-              onClick={() => setActiveSection('contact')}
+              onClick={() => setActiveSection('Kontakt')}
               className={`px-8 py-3 rounded-lg font-semibold transition-colors ${
                 theme.buttonStyle === 'solid' 
                   ? 'text-white' 
@@ -680,7 +680,7 @@ const App = () => {
               Objednejte se na návštěvu
             </button>
             <button
-              onClick={() => setActiveSection('services')}
+              onClick={() => setActiveSection('Služby')}
               className="border-2 px-8 py-3 rounded-lg font-semibold transition-colors"
               style={{
                 borderColor: theme.primaryColor,
@@ -702,7 +702,7 @@ const App = () => {
     </div>
   );
 
-  const Services = () => (
+  const Sluzby = () => (
     <div 
       className="py-16"
       style={{ backgroundColor: theme.backgroundColor, ...getFlowerPattern() }}
@@ -723,7 +723,7 @@ const App = () => {
           </p>
         </div>
         <div className="grid md:grid-cols-2 gap-8">
-          {services.map((service, index) => (
+          {Služby.map((service, index) => (
             <div 
               key={index} 
               className="p-8 rounded-lg transition-shadow hover:shadow-lg"
@@ -748,7 +748,7 @@ const App = () => {
     </div>
   );
 
-  const Pricing = () => (
+  const Ceník = () => (
     <div 
       className="py-16"
       style={{ backgroundColor: theme.backgroundColor, ...getFlowerPattern() }}
@@ -797,7 +797,7 @@ const App = () => {
                 </tr>
               </thead>
               <tbody>
-                {pricingData.map((item, index) => (
+                {CeníkData.map((item, index) => (
                   <tr 
                     key={index} 
                     className={index % 2 === 0 ? '' : 'bg-opacity-50'}
@@ -987,7 +987,7 @@ const App = () => {
             ></iframe>
           </div>
         </div>
-        {/* Pricing table on home page */}
+        {/* Ceník table on Hlavní stránka page */}
         <div className="mt-16">
           <div className="text-center mb-8">
             <h3 
@@ -1031,7 +1031,7 @@ const App = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {pricingData.slice(0, 3).map((item, index) => (
+                  {CeníkData.slice(0, 3).map((item, index) => (
                     <tr 
                       key={index} 
                       className={index % 2 === 0 ? '' : 'bg-opacity-50'}
@@ -1084,7 +1084,7 @@ const App = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {pricingData.slice(3).map((item, index) => (
+                  {CeníkData.slice(3).map((item, index) => (
                     <tr 
                       key={index} 
                       className={index % 2 === 0 ? '' : 'bg-opacity-50'}
@@ -1113,7 +1113,7 @@ const App = () => {
           </div>
           <div className="mt-6 text-center">
             <button
-              onClick={() => setActiveSection('pricing')}
+              onClick={() => setActiveSection('Ceník')}
               className="inline-flex items-center px-4 py-2 rounded-md font-medium transition-colors"
               style={{
                 color: theme.primaryColor,
@@ -1254,7 +1254,7 @@ const App = () => {
     );
   };
 
-  const About = () => (
+  const Omě = () => (
     <div 
       className="py-16"
       style={{ backgroundColor: `${theme.backgroundColor}cc`, ...getFlowerPattern() }}
@@ -1344,7 +1344,7 @@ const App = () => {
     </div>
   );
 
-  const Contact = () => (
+  const Kontakt = () => (
     <div 
       className="py-16"
       style={{ backgroundColor: theme.backgroundColor, ...getFlowerPattern() }}
@@ -1544,32 +1544,32 @@ const App = () => {
 
   const renderContent = () => {
     switch (activeSection) {
-      case 'home':
+      case 'Hlavní stránka':
         return (
           <>
             <Hero />
-            <Services />
-            <About />
+            <Sluzby />
+            <Omě />
             <HoursAndLocation />
           </>
         );
-      case 'services':
-        return <Services />;
-      case 'about':
-        return <About />;
-      case 'pricing':
-        return <Pricing />;
+      case 'Služby':
+        return <Sluzby />;
+      case 'O mě':
+        return <Omě />;
+      case 'Ceník':
+        return <Ceník />;
       case 'hours':
         return <HoursAndLocation />;
-      case 'contact':
-        return <Contact />;
+      case 'Kontakt':
+        return <Kontakt />;
       case 'blog':
         return <Blog />;
       default:
         return (
           <>
             <Hero />
-            <Services />
+            <Sluzby />
             <HoursAndLocation />
           </>
         );
