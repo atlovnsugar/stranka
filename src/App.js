@@ -1723,7 +1723,7 @@ const App = () => {
                 <p>{practiceInfo.city}</p>
                 <p>{practiceInfo.phone}</p>
                 <p>{practiceInfo.email}</p>
-                <P>IČO: </P>
+                <p>IČO: </p>
               </div>
             </div>
           </div>
