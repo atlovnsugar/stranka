@@ -912,7 +912,7 @@ const App = () => {
                   size={24} 
                   style={{ color: theme.primaryColor }}
                 />
-                <span style={{ color: theme.textColor }}>Location</span>
+                <span style={{ color: theme.textColor }}>Lokace</span>
               </h3>
               <div className="space-y-4">
                 <div className="flex items-start">
@@ -1370,7 +1370,7 @@ const App = () => {
                 className="text-2xl font-semibold mb-6"
                 style={{ color: theme.textColor }}
               >
-                Get in Touch
+                Kontaktní informace
               </h3>
               <div className="space-y-6">
                 <div className="flex items-start">
@@ -1403,7 +1403,7 @@ const App = () => {
                       className="font-medium"
                       style={{ color: theme.textColor }}
                     >
-                      Phone
+                      Telefon
                     </h4>
                     <p style={{ color: `${theme.textColor}cc` }}>
                       {practiceInfo.phone}
@@ -1723,6 +1723,7 @@ const App = () => {
                 <p>{practiceInfo.city}</p>
                 <p>{practiceInfo.phone}</p>
                 <p>{practiceInfo.email}</p>
+                <P>IČO: </P>
               </div>
             </div>
           </div>
