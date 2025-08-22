@@ -4,7 +4,7 @@ import { MapPin, Phone, Mail, Clock, Menu, X, CreditCard } from 'lucide-react';
 const App = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   // Použijeme anglické klíče pro interní logiku
-  const [activeSection, setActiveSection] = useState('home'); 
+  const [activeSection, setActiveSection] = useState('home');
   const [selectedArticle, setSelectedArticle] = useState(null);
   const [practiceInfo, setPracticeInfo] = useState({});
   const [services, setServices] = useState([]); // Přejmenováno z Služby
@@ -594,101 +594,70 @@ const App = () => {
       className="relative py-16 overflow-hidden"
       style={{ backgroundColor: theme.backgroundColor, ...getFlowerPattern() }}
     >
-      {/* Background image gallery */}
-      <div className="absolute inset-0 z-0">
-        <div className="grid grid-cols-3 grid-rows-2 h-full w-full">
-          {[1, 2, 3, 4, 5, 6].map((item) => (
-            <div 
-              key={item} 
-              className="relative overflow-hidden"
-              style={{ opacity: 0.3 }}
-            >
-              <img
-                src={`https://placehold.co/600x400/${theme.primaryColor.replace('#', '')}/ffffff?text=Speech+Therapy+${item}`}
-                alt={`Speech therapy ${item}`}
-                className="w-full h-full object-cover"
-              />
-              <div 
-                className="absolute inset-0"
-                style={{ 
-                  backgroundColor: theme.primaryColor,
-                  opacity: 0.2
-                }}
-              ></div>
-            </div>
-          ))}
-        </div>
-        {/* Overlay gradient for better text visibility */}
-        <div 
-          className="absolute inset-0"
-          style={{
-            background: `linear-gradient(135deg, ${theme.backgroundColor}ee 0%, ${theme.primaryColor}44 50%, ${theme.secondaryColor}44 100%)`
-          }}
-        ></div>
+      {/* Background image */}
+      <div className="absolute inset-0 z-0 overflow-hidden">
+        <img 
+          src="/images/hero-background.jpg" // Cesta k obrázku v public/images
+          alt="Hero Background" 
+          className="w-full h-full object-cover opacity-20"
+        />
       </div>
-      {/* Content */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center">
-          <h1 
-            className="text-4xl md:text-6xl font-bold mb-6"
-            style={{ color: theme.textColor }}
-          >
-            {practiceInfo.name}
-          </h1>
-          <p 
-            className="text-xl mb-8 max-w-3xl mx-auto"
-            style={{ color: `${theme.textColor}cc` }}
-          >
-            {practiceInfo.tagline}
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button
-              onClick={() => setActiveSection('Kontakt')}
-              className={`px-8 py-3 rounded-lg font-semibold transition-colors ${
-                theme.buttonStyle === 'solid' 
-                  ? 'text-white' 
-                  : 'border-2'
-              }`}
-              style={{
-                backgroundColor: theme.buttonStyle === 'solid' ? theme.primaryColor : 'transparent',
-                borderColor: theme.buttonStyle === 'outline' ? theme.primaryColor : 'transparent',
-                color: theme.buttonStyle === 'outline' ? theme.primaryColor : 'white'
-              }}
-              onMouseOver={(e) => {
-                if (theme.buttonStyle === 'solid') {
-                  e.target.style.backgroundColor = theme.secondaryColor;
-                } else {
-                  e.target.style.backgroundColor = `${theme.primaryColor}20`;
-                }
-              }}
-              onMouseOut={(e) => {
-                if (theme.buttonStyle === 'solid') {
-                  e.target.style.backgroundColor = theme.primaryColor;
-                } else {
-                  e.target.style.backgroundColor = 'transparent';
-                }
-              }}
-            >
-              Objednejte se na návštěvu
-            </button>
-            <button
-              onClick={() => setActiveSection('Služby')}
-              className="border-2 px-8 py-3 rounded-lg font-semibold transition-colors"
-              style={{
-                borderColor: theme.primaryColor,
-                color: theme.primaryColor,
-                backgroundColor: 'transparent'
-              }}
-              onMouseOver={(e) => {
+      
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h1 
+          className="text-4xl md:text-6xl font-bold mb-6"
+          style={{ color: theme.textColor }}
+        >
+          Logopedie Petra Tabačíková
+        </h1>
+        <p 
+          className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto"
+          style={{ color: `${theme.textColor}cc` }}
+        >
+          Specializovaná logopedická péče pro děti i dospělé
+        </p>
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <button
+            onClick={() => setActiveSection('contact')}
+            className="px-8 py-3 rounded-lg font-semibold transition-colors"
+            style={{
+              backgroundColor: theme.primaryColor,
+              color: 'white'
+            }}
+            onMouseOver={(e) => {
+              if (theme.buttonStyle === 'solid') {
+                e.target.style.backgroundColor = theme.secondaryColor;
+              } else {
                 e.target.style.backgroundColor = `${theme.primaryColor}20`;
-              }}
-              onMouseOut={(e) => {
+              }
+            }}
+            onMouseOut={(e) => {
+              if (theme.buttonStyle === 'solid') {
+                e.target.style.backgroundColor = theme.primaryColor;
+              } else {
                 e.target.style.backgroundColor = 'transparent';
-              }}
-            >
-              Služby
-            </button>
-          </div>
+              }
+            }}
+          >
+            Objednejte se na návštěvu
+          </button>
+          <button
+            onClick={() => setActiveSection('services')}
+            className="border-2 px-8 py-3 rounded-lg font-semibold transition-colors"
+            style={{
+              borderColor: theme.primaryColor,
+              color: theme.primaryColor,
+              backgroundColor: 'transparent'
+            }}
+            onMouseOver={(e) => {
+              e.target.style.backgroundColor = `${theme.primaryColor}20`;
+            }}
+            onMouseOut={(e) => {
+              e.target.style.backgroundColor = 'transparent';
+            }}
+          >
+            Služby
+          </button>
         </div>
       </div>
     </div>
@@ -1165,6 +1134,18 @@ const App = () => {
                 <span className="mx-2">•</span>
                 <span>{selectedArticle.readTime}</span>
               </div>
+              
+              {/* Zobrazení obrázku článku, pokud existuje */}
+              {selectedArticle.image && (
+                <div className="mb-6">
+                  <img 
+                    src={`/images/articles/${selectedArticle.image}`} 
+                    alt={selectedArticle.title} 
+                    className="w-full h-auto rounded-lg shadow-md"
+                  />
+                </div>
+              )}
+              
               <div 
                 className="prose prose-lg max-w-none"
                 style={{ color: theme.textColor }}
@@ -1206,12 +1187,23 @@ const App = () => {
                 }}
                 onClick={() => setSelectedArticle(article)}
               >
-                <div 
-                  className="h-48"
-                  style={{ 
-                    background: `linear-gradient(135deg, ${theme.primaryColor}40, ${theme.secondaryColor}40)` 
-                  }}
-                ></div>
+                {/* Zobrazení náhledového obrázku článku, pokud existuje */}
+                {article.previewImage ? (
+                  <div className="h-48 overflow-hidden">
+                    <img 
+                      src={`/images/articles/${article.previewImage}`} 
+                      alt={article.title} 
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                ) : (
+                  <div 
+                    className="h-48"
+                    style={{ 
+                      background: `linear-gradient(135deg, ${theme.primaryColor}40, ${theme.secondaryColor}40)` 
+                    }}
+                  ></div>
+                )}
                 <div className="p-6">
                   <div className="flex items-center text-sm mb-3" style={{ color: `${theme.textColor}80` }}>
                     <span>{article.date}</span>
@@ -1281,9 +1273,9 @@ const App = () => {
             <div className="md:w-1/3 flex justify-center">
               <div className="relative">
                 <img
-                  src="https://placehold.co/300x400/e2e8f0/64748b?text=Professional+Headshot"
-                  alt="Speech Therapist Headshot"
-                  className="rounded-lg shadow-md w-full max-w-sm"
+                  src="/images/about-me.jpg" // Cesta k obrázku v public/images
+                  alt="Petra Tabačíková - Logoped"
+                  className="rounded-lg shadow-md w-full max-w-sm object-cover h-auto"
                 />
                 <div 
                   className="absolute inset-0 rounded-lg"
