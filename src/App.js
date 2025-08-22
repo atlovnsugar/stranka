@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-// eslint-disable-next-line no-unused-vars
 import { MapPin, Phone, Mail, Clock, Menu, X, CreditCard, ChevronLeft, ChevronRight, X as CloseIcon } from 'lucide-react';
+
 const App = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   // Použijeme anglické klíče pro interní logiku
@@ -26,6 +26,13 @@ const App = () => {
 
   // BLUE INTENSITY - Only affects peaGreen1 and peaGreen2 themes (values 1-10)
   const blueIntensity = 9;
+
+  // Dynamicky načítáme obrázky pomocí require.context
+  // Nahrazeno /\.jpg/ za /\.(jpg|jpeg|png|gif|bmp|webp|svg|ico)$/i pro podporu více formátů
+  const heroImagesContext = require.context('../public/images', false, /\.(jpg|jpeg|png|gif|bmp|webp|svg|ico)$/i);
+  const aboutImagesContext = require.context('../public/images', false, /\.(jpg|jpeg|png|gif|bmp|webp|svg|ico)$/i);
+  const articleImagesContext = require.context('../public/images/articles', false, /\.(jpg|jpeg|png|gif|bmp|webp|svg|ico)$/i);
+  const galleryImagesContext = require.context('../public/images/gallery', false, /\.(jpg|jpeg|png|gif|bmp|webp|svg|ico)$/i);
 
   // Load data from JSON files
   useEffect(() => {
@@ -502,7 +509,7 @@ const App = () => {
       </svg>
     `);
     return {
-      backgroundImage: `url("image/svg+xml,${flowerSVG}")`,
+      backgroundImage: `url("data:image/svg+xml,${flowerSVG}")`,
       backgroundSize: '150px 150px',
       backgroundAttachment: 'fixed'
     };
@@ -512,7 +519,7 @@ const App = () => {
   useEffect(() => {
     if (practiceInfo.heroImages && practiceInfo.heroImages.length > 1) {
       const interval = setInterval(() => {
-        setCurrentHeroImageIndex((prevIndex) => 
+        setCurrentHeroImageIndex((prevIndex) =>
           (prevIndex + 1) % practiceInfo.heroImages.length
         );
       }, 5000); // Change image every 5 seconds
@@ -520,20 +527,43 @@ const App = () => {
     }
   }, [practiceInfo.heroImages]);
 
+  // Helper function to get image path from context
+  const getImagePath = (imageName, context, defaultPath = '') => {
+    if (!imageName) return defaultPath;
+    try {
+      // Pokusíme se najít obrázek podle jména (včetně přípony)
+      const key = `./${imageName}`;
+      if (context.keys().includes(key)) {
+        return context(key);
+      }
+      // Pokud nenajdeme přesný název, můžeme zkusit najít bez přípony
+      // (Toto je jednodušší varianta, v praxi by bylo lepší použít více robustní vyhledávání)
+      const matchingKey = context.keys().find(k => k.startsWith(`./${imageName.split('.')[0]}.`) || k === `./${imageName}`);
+      if (matchingKey) {
+        return context(matchingKey);
+      }
+      console.warn(`Image not found in context: ${imageName}`);
+      return defaultPath;
+    } catch (e) {
+      console.error(`Error loading image: ${imageName}`, e);
+      return defaultPath;
+    }
+  };
+
   const Navigation = () => (
     <nav className={`shadow-lg sticky top-0 z-50`} style={{ backgroundColor: theme.headerBg }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <div className="flex-shrink-0 flex items-center">
-              <div 
+              <div
                 className="w-10 h-10 rounded-full flex items-center justify-center"
                 style={{ backgroundColor: theme.primaryColor }}
               >
                 <span className="text-white font-bold text-lg">PT</span>
               </div>
-              <span 
-                className="ml-3 text-xl font-bold" 
+              <span
+                className="ml-3 text-xl font-bold"
                 style={{ color: theme.headerBg === '#000000' || theme.headerBg === 'black' ? 'white' : theme.textColor }}
               >
                 {practiceInfo.name}
@@ -609,104 +639,113 @@ const App = () => {
     </nav>
   );
 
-  const Hero = () => (
-    <div 
-      className="relative py-16 overflow-hidden"
-      style={{ backgroundColor: theme.backgroundColor, ...getFlowerPattern() }}
-    >
-      {/* Background images with fade transition */}
-      <div className="absolute inset-0 z-0 overflow-hidden">
-        {practiceInfo.heroImages && practiceInfo.heroImages.length > 0 && (
-          <>
-            {practiceInfo.heroImages.map((image, index) => (
-              <img 
-                key={index}
-                src={`/images/${image}`} 
-                alt={`Hero Background ${index + 1}`}
-                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
-                  index === currentHeroImageIndex ? 'opacity-20' : 'opacity-0'
-                }`}
-              />
-            ))}
-          </>
-        )}
-      </div>
-      
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h1 
-          className="text-4xl md:text-6xl font-bold mb-6"
-          style={{ color: theme.textColor }}
-        >
-          {practiceInfo.title || 'Logopedie Petra Tabačíková'}
-        </h1>
-        <p 
-          className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto"
-          style={{ color: `${theme.textColor}cc` }}
-        >
-          {practiceInfo.subtitle || 'Specializovaná logopedická péče pro děti i dospělé'}
-        </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <button
-            onClick={() => setActiveSection('contact')}
-            className="px-8 py-3 rounded-lg font-semibold transition-colors"
-            style={{
-              backgroundColor: theme.primaryColor,
-              color: 'white'
-            }}
-            onMouseOver={(e) => {
-              if (theme.buttonStyle === 'solid') {
-                e.target.style.backgroundColor = theme.secondaryColor;
-              } else {
+  const Hero = () => {
+    // Získáme cestu k aktuálnímu obrázku
+    const currentHeroImageName = practiceInfo.heroImages?.[currentHeroImageIndex];
+    const currentHeroImagePath = currentHeroImageName ? getImagePath(currentHeroImageName, heroImagesContext) : '';
+
+    return (
+      <div
+        className="relative py-16 overflow-hidden"
+        style={{ backgroundColor: theme.backgroundColor, ...getFlowerPattern() }}
+      >
+        {/* Background images with fade transition */}
+        <div className="absolute inset-0 z-0 overflow-hidden">
+          {practiceInfo.heroImages && practiceInfo.heroImages.length > 0 && (
+            <>
+              {practiceInfo.heroImages.map((imageName, index) => {
+                const imagePath = getImagePath(imageName, heroImagesContext);
+                return (
+                  <img
+                    key={index}
+                    src={imagePath}
+                    alt={`Hero Background ${index + 1}`}
+                    className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
+                      index === currentHeroImageIndex ? 'opacity-20' : 'opacity-0'
+                    }`}
+                  />
+                );
+              })}
+            </>
+          )}
+        </div>
+
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h1
+            className="text-4xl md:text-6xl font-bold mb-6"
+            style={{ color: theme.textColor }}
+          >
+            {practiceInfo.title || 'Logopedie Petra Tabačíková'}
+          </h1>
+          <p
+            className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto"
+            style={{ color: `${theme.textColor}cc` }}
+          >
+            {practiceInfo.subtitle || 'Specializovaná logopedická péče pro děti i dospělé'}
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <button
+              onClick={() => setActiveSection('contact')}
+              className="px-8 py-3 rounded-lg font-semibold transition-colors"
+              style={{
+                backgroundColor: theme.primaryColor,
+                color: 'white'
+              }}
+              onMouseOver={(e) => {
+                if (theme.buttonStyle === 'solid') {
+                  e.target.style.backgroundColor = theme.secondaryColor;
+                } else {
+                  e.target.style.backgroundColor = `${theme.primaryColor}20`;
+                }
+              }}
+              onMouseOut={(e) => {
+                if (theme.buttonStyle === 'solid') {
+                  e.target.style.backgroundColor = theme.primaryColor;
+                } else {
+                  e.target.style.backgroundColor = 'transparent';
+                }
+              }}
+            >
+              Objednejte se na návštěvu
+            </button>
+            <button
+              onClick={() => setActiveSection('services')}
+              className="border-2 px-8 py-3 rounded-lg font-semibold transition-colors"
+              style={{
+                borderColor: theme.primaryColor,
+                color: theme.primaryColor,
+                backgroundColor: 'transparent'
+              }}
+              onMouseOver={(e) => {
                 e.target.style.backgroundColor = `${theme.primaryColor}20`;
-              }
-            }}
-            onMouseOut={(e) => {
-              if (theme.buttonStyle === 'solid') {
-                e.target.style.backgroundColor = theme.primaryColor;
-              } else {
+              }}
+              onMouseOut={(e) => {
                 e.target.style.backgroundColor = 'transparent';
-              }
-            }}
-          >
-            Objednejte se na návštěvu
-          </button>
-          <button
-            onClick={() => setActiveSection('services')}
-            className="border-2 px-8 py-3 rounded-lg font-semibold transition-colors"
-            style={{
-              borderColor: theme.primaryColor,
-              color: theme.primaryColor,
-              backgroundColor: 'transparent'
-            }}
-            onMouseOver={(e) => {
-              e.target.style.backgroundColor = `${theme.primaryColor}20`;
-            }}
-            onMouseOut={(e) => {
-              e.target.style.backgroundColor = 'transparent';
-            }}
-          >
-            Služby
-          </button>
+              }}
+            >
+              Služby
+            </button>
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   // Přejmenováno z Sluzby na Services
   const Services = () => (
-    <div 
+    <div
       className="py-16"
       style={{ backgroundColor: theme.backgroundColor, ...getFlowerPattern() }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h2 
+          <h2
             className="text-3xl font-bold mb-4"
             style={{ color: theme.textColor }}
           >
             Služby
           </h2>
-          <p 
+          <p
             className="text-lg max-w-2xl mx-auto"
             style={{ color: `${theme.textColor}cc` }}
           >
@@ -715,15 +754,15 @@ const App = () => {
         </div>
         <div className="grid md:grid-cols-2 gap-8">
           {services.map((service, index) => ( // Použijeme přejmenovaný stav
-            <div 
-              key={index} 
+            <div
+              key={index}
               className="p-8 rounded-lg transition-shadow hover:shadow-lg"
-              style={{ 
+              style={{
                 backgroundColor: theme.cardBg,
                 border: `1px solid ${theme.primaryColor}`
               }}
             >
-              <h3 
+              <h3
                 className="text-xl font-semibold mb-4"
                 style={{ color: theme.textColor }}
               >
@@ -741,19 +780,19 @@ const App = () => {
 
   // Přejmenováno z Ceník na Pricing
   const Pricing = () => (
-    <div 
+    <div
       className="py-16"
       style={{ backgroundColor: theme.backgroundColor, ...getFlowerPattern() }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h2 
+          <h2
             className="text-3xl font-bold mb-4"
             style={{ color: theme.textColor }}
           >
             Ceník
           </h2>
-          <p 
+          <p
             className="text-lg max-w-3xl mx-auto mb-8"
             style={{ color: `${theme.textColor}cc` }}
           >
@@ -761,25 +800,25 @@ const App = () => {
           </p>
         </div>
         <div className="flex justify-center">
-          <div 
+          <div
             className="rounded-lg shadow-sm overflow-hidden w-full max-w-2xl"
-            style={{ 
+            style={{
               backgroundColor: theme.cardBg,
               border: `1px solid ${theme.primaryColor}`
             }}
           >
             <table className="w-full">
               <thead>
-                <tr 
+                <tr
                   style={{ backgroundColor: `${theme.primaryColor}20` }}
                 >
-                  <th 
+                  <th
                     className="py-4 px-6 text-left font-semibold"
                     style={{ color: theme.textColor }}
                   >
                     Služba
                   </th>
-                  <th 
+                  <th
                     className="py-4 px-6 text-right font-semibold"
                     style={{ color: theme.textColor }}
                   >
@@ -789,21 +828,21 @@ const App = () => {
               </thead>
               <tbody>
                 {pricingData.map((item, index) => ( // Použijeme přejmenovaný stav
-                  <tr 
-                    key={index} 
+                  <tr
+                    key={index}
                     className={index % 2 === 0 ? '' : 'bg-opacity-50'}
-                    style={{ 
+                    style={{
                       backgroundColor: index % 2 === 0 ? 'transparent' : `${theme.accentColor}10`,
                       borderBottom: `1px solid ${theme.accentColor}20`
                     }}
                   >
-                    <td 
+                    <td
                       className="py-4 px-6"
                       style={{ color: theme.textColor }}
                     >
                       {item.service}
                     </td>
-                    <td 
+                    <td
                       className="py-4 px-6 text-right font-medium"
                       style={{ color: theme.textColor }}
                     >
@@ -815,17 +854,17 @@ const App = () => {
             </table>
           </div>
         </div>
-        <div 
+        <div
           className="mt-8 p-6 rounded-lg max-w-3xl mx-auto"
-          style={{ 
+          style={{
             backgroundColor: `${theme.primaryColor}10`,
             border: `1px solid ${theme.primaryColor}`
           }}
         >
           <div className="flex items-start">
-            <CreditCard 
-              className="mr-3 mt-1 flex-shrink-0" 
-              size={20} 
+            <CreditCard
+              className="mr-3 mt-1 flex-shrink-0"
+              size={20}
               style={{ color: theme.primaryColor }}
             />
             <p style={{ color: theme.textColor }}>
@@ -839,19 +878,19 @@ const App = () => {
 
   // Přejmenováno z HoursAndLocation na HoursAndLocation
   const HoursAndLocation = () => (
-    <div 
+    <div
       className="py-16"
       style={{ backgroundColor: `${theme.backgroundColor}cc`, ...getFlowerPattern() }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h2 
+          <h2
             className="text-3xl font-bold mb-4"
             style={{ color: theme.textColor }}
           >
             Ordinační hodiny a poloha
           </h2>
-          <p 
+          <p
             className="text-lg"
             style={{ color: `${theme.textColor}cc` }}
           >
@@ -860,31 +899,31 @@ const App = () => {
         </div>
         <div className="grid lg:grid-cols-2 gap-12">
           <div>
-            <div 
+            <div
               className="p-8 rounded-lg shadow-sm"
-              style={{ 
+              style={{
                 backgroundColor: theme.cardBg,
                 border: `1px solid ${theme.primaryColor}`
               }}
             >
-              <h3 
+              <h3
                 className="text-2xl font-semibold mb-6 flex items-center"
               >
-                <Clock 
-                  className="mr-3" 
-                  size={24} 
+                <Clock
+                  className="mr-3"
+                  size={24}
                   style={{ color: theme.primaryColor }}
                 />
                 <span style={{ color: theme.textColor }}>Otevírací doba</span>
               </h3>
               <div className="space-y-4">
                 {practiceInfo.hours && practiceInfo.hours.map((hour, index) => (
-                  <div 
-                    key={index} 
+                  <div
+                    key={index}
                     className="flex justify-between py-2 border-b"
                     style={{ borderColor: `${theme.accentColor}20` }}
                   >
-                    <span 
+                    <span
                       className="font-medium"
                       style={{ color: theme.textColor }}
                     >
@@ -897,32 +936,32 @@ const App = () => {
                 ))}
               </div>
             </div>
-            <div 
+            <div
               className="p-8 rounded-lg shadow-sm mt-8"
-              style={{ 
+              style={{
                 backgroundColor: theme.cardBg,
                 border: `1px solid ${theme.primaryColor}`
               }}
             >
-              <h3 
+              <h3
                 className="text-2xl font-semibold mb-6 flex items-center"
               >
-                <MapPin 
-                  className="mr-3" 
-                  size={24} 
+                <MapPin
+                  className="mr-3"
+                  size={24}
                   style={{ color: theme.primaryColor }}
                 />
-                <span style={{ color: theme.textColor }}>Lokace</span>
+                <span style={{ color: theme.textColor }}>Location</span>
               </h3>
               <div className="space-y-4">
                 <div className="flex items-start">
-                  <MapPin 
-                    className="mr-3 mt-1" 
-                    size={20} 
+                  <MapPin
+                    className="mr-3 mt-1"
+                    size={20}
                     style={{ color: `${theme.textColor}80` }}
                   />
                   <div>
-                    <p 
+                    <p
                       className="font-medium"
                       style={{ color: theme.textColor }}
                     >
@@ -934,9 +973,9 @@ const App = () => {
                   </div>
                 </div>
                 <div className="flex items-center">
-                  <Phone 
-                    className="mr-3" 
-                    size={20} 
+                  <Phone
+                    className="mr-3"
+                    size={20}
                     style={{ color: `${theme.textColor}80` }}
                   />
                   <span style={{ color: `${theme.textColor}cc` }}>
@@ -944,9 +983,9 @@ const App = () => {
                   </span>
                 </div>
                 <div className="flex items-center">
-                  <Mail 
-                    className="mr-3" 
-                    size={20} 
+                  <Mail
+                    className="mr-3"
+                    size={20}
                     style={{ color: `${theme.textColor}80` }}
                   />
                   <span style={{ color: `${theme.textColor}cc` }}>
@@ -957,10 +996,10 @@ const App = () => {
             </div>
           </div>
           {/* Fixed map container - now properly sized */}
-          <div 
+          <div
             className="rounded-lg shadow-sm"
-            style={{ 
-              backgroundColor: theme.cardBg, 
+            style={{
+              backgroundColor: theme.cardBg,
               height: 'fit-content',
               border: `1px solid ${theme.primaryColor}`
             }}
@@ -980,13 +1019,13 @@ const App = () => {
         {/* Ceník table on Hlavní stránka page */}
         <div className="mt-16">
           <div className="text-center mb-8">
-            <h3 
+            <h3
               className="text-2xl font-bold"
               style={{ color: theme.textColor }}
             >
               Ceník
             </h3>
-            <p 
+            <p
               className="text-lg mt-2"
               style={{ color: `${theme.textColor}cc` }}
             >
@@ -994,25 +1033,25 @@ const App = () => {
             </p>
           </div>
           <div className="grid md:grid-cols-2 gap-8">
-            <div 
+            <div
               className="rounded-lg shadow-sm overflow-hidden"
-              style={{ 
+              style={{
                 backgroundColor: theme.cardBg,
                 border: `1px solid ${theme.primaryColor}`
               }}
             >
               <table className="w-full">
                 <thead>
-                  <tr 
+                  <tr
                     style={{ backgroundColor: `${theme.primaryColor}20` }}
                   >
-                    <th 
+                    <th
                       className="py-3 px-4 text-left font-semibold"
                       style={{ color: theme.textColor }}
                     >
                       Služba
                     </th>
-                    <th 
+                    <th
                       className="py-3 px-4 text-right font-semibold"
                       style={{ color: theme.textColor }}
                     >
@@ -1022,21 +1061,21 @@ const App = () => {
                 </thead>
                 <tbody>
                   {pricingData.slice(0, 3).map((item, index) => ( // Použijeme přejmenovaný stav
-                    <tr 
-                      key={index} 
+                    <tr
+                      key={index}
                       className={index % 2 === 0 ? '' : 'bg-opacity-50'}
-                      style={{ 
+                      style={{
                         backgroundColor: index % 2 === 0 ? 'transparent' : `${theme.accentColor}10`,
                         borderBottom: `1px solid ${theme.accentColor}20`
                       }}
                     >
-                      <td 
+                      <td
                         className="py-3 px-4"
                         style={{ color: theme.textColor }}
                       >
                         {item.service}
                       </td>
-                      <td 
+                      <td
                         className="py-3 px-4 text-right font-medium"
                         style={{ color: theme.textColor }}
                       >
@@ -1047,25 +1086,25 @@ const App = () => {
                 </tbody>
               </table>
             </div>
-            <div 
+            <div
               className="rounded-lg shadow-sm overflow-hidden"
-              style={{ 
+              style={{
                 backgroundColor: theme.cardBg,
                 border: `1px solid ${theme.primaryColor}`
               }}
             >
               <table className="w-full">
                 <thead>
-                  <tr 
+                  <tr
                     style={{ backgroundColor: `${theme.primaryColor}20` }}
                   >
-                    <th 
+                    <th
                       className="py-3 px-4 text-left font-semibold"
                       style={{ color: theme.textColor }}
                     >
                       Služba
                     </th>
-                    <th 
+                    <th
                       className="py-3 px-4 text-right font-semibold"
                       style={{ color: theme.textColor }}
                     >
@@ -1075,21 +1114,21 @@ const App = () => {
                 </thead>
                 <tbody>
                   {pricingData.slice(3).map((item, index) => ( // Použijeme přejmenovaný stav
-                    <tr 
-                      key={index} 
+                    <tr
+                      key={index}
                       className={index % 2 === 0 ? '' : 'bg-opacity-50'}
-                      style={{ 
+                      style={{
                         backgroundColor: index % 2 === 0 ? 'transparent' : `${theme.accentColor}10`,
                         borderBottom: `1px solid ${theme.accentColor}20`
                       }}
                     >
-                      <td 
+                      <td
                         className="py-3 px-4"
                         style={{ color: theme.textColor }}
                       >
                         {item.service}
                       </td>
-                      <td 
+                      <td
                         className="py-3 px-4 text-right font-medium"
                         style={{ color: theme.textColor }}
                       >
@@ -1118,7 +1157,7 @@ const App = () => {
             >
               Zobrazit kompletní ceník
               <svg className="ml-2" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                <path fillRule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                <path fillRule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z" />
               </svg>
             </button>
           </div>
@@ -1129,27 +1168,29 @@ const App = () => {
 
   const Blog = () => {
     if (selectedArticle) {
+      // Získáme cestu k obrázku článku
+      const articleImagePath = selectedArticle.image ? getImagePath(selectedArticle.image, articleImagesContext) : '';
       return (
-        <div 
+        <div
           className="py-16"
           style={{ backgroundColor: theme.backgroundColor, ...getFlowerPattern() }}
         >
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <button 
+            <button
               onClick={() => setSelectedArticle(null)}
               className="mb-6 flex items-center text-blue-600 hover:text-blue-800"
               style={{ color: theme.primaryColor }}
             >
               ← Back to Blog
             </button>
-            <article 
+            <article
               className="rounded-lg shadow-sm p-8"
-              style={{ 
+              style={{
                 backgroundColor: theme.cardBg,
                 border: `1px solid ${theme.primaryColor}`
               }}
             >
-              <h1 
+              <h1
                 className="text-3xl font-bold mb-4"
                 style={{ color: theme.textColor }}
               >
@@ -1160,19 +1201,19 @@ const App = () => {
                 <span className="mx-2">•</span>
                 <span>{selectedArticle.readTime}</span>
               </div>
-              
+
               {/* Zobrazení obrázku článku, pokud existuje */}
               {selectedArticle.image && (
                 <div className="mb-6">
-                  <img 
-                    src={`/images/articles/${selectedArticle.image}`} 
-                    alt={selectedArticle.title} 
+                  <img
+                    src={articleImagePath}
+                    alt={selectedArticle.title}
                     className="w-full h-auto rounded-lg shadow-md"
                   />
                 </div>
               )}
-              
-              <div 
+
+              <div
                 className="prose prose-lg max-w-none"
                 style={{ color: theme.textColor }}
                 dangerouslySetInnerHTML={{ __html: selectedArticle.content }}
@@ -1183,19 +1224,19 @@ const App = () => {
       );
     }
     return (
-      <div 
+      <div
         className="py-16"
         style={{ backgroundColor: theme.backgroundColor, ...getFlowerPattern() }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 
+            <h2
               className="text-3xl font-bold mb-4"
               style={{ color: theme.textColor }}
             >
               Nedávné články
             </h2>
-            <p 
+            <p
               className="text-lg"
               style={{ color: `${theme.textColor}cc` }}
             >
@@ -1203,64 +1244,68 @@ const App = () => {
             </p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {articles.map((article) => (
-              <div 
-                key={article.id} 
-                className="rounded-lg overflow-hidden transition-shadow hover:shadow-lg cursor-pointer"
-                style={{ 
-                  backgroundColor: theme.cardBg,
-                  border: `1px solid ${theme.primaryColor}`
-                }}
-                onClick={() => setSelectedArticle(article)}
-              >
-                {/* Zobrazení náhledového obrázku článku, pokud existuje */}
-                {article.previewImage ? (
-                  <div className="h-48 overflow-hidden">
-                    <img 
-                      src={`/images/articles/${article.previewImage}`} 
-                      alt={article.title} 
-                      className="w-full h-full object-cover"
-                    />
+            {articles.map((article) => {
+              // Získáme cestu k náhledovému obrázku
+              const previewImagePath = article.previewImage ? getImagePath(article.previewImage, articleImagesContext) : '';
+              return (
+                <div
+                  key={article.id}
+                  className="rounded-lg overflow-hidden transition-shadow hover:shadow-lg cursor-pointer"
+                  style={{
+                    backgroundColor: theme.cardBg,
+                    border: `1px solid ${theme.primaryColor}`
+                  }}
+                  onClick={() => setSelectedArticle(article)}
+                >
+                  {/* Zobrazení náhledového obrázku článku, pokud existuje */}
+                  {article.previewImage ? (
+                    <div className="h-48 overflow-hidden">
+                      <img
+                        src={previewImagePath}
+                        alt={article.title}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  ) : (
+                    <div
+                      className="h-48"
+                      style={{
+                        background: `linear-gradient(135deg, ${theme.primaryColor}40, ${theme.secondaryColor}40)`
+                      }}
+                    ></div>
+                  )}
+                  <div className="p-6">
+                    <div className="flex items-center text-sm mb-3" style={{ color: `${theme.textColor}80` }}>
+                      <span>{article.date}</span>
+                      <span className="mx-2">•</span>
+                      <span>{article.readTime}</span>
+                    </div>
+                    <h3
+                      className="text-xl font-semibold mb-3"
+                      style={{ color: theme.textColor }}
+                    >
+                      {article.title}
+                    </h3>
+                    <p
+                      className="mb-4"
+                      style={{ color: `${theme.textColor}cc` }}
+                    >
+                      {article.excerpt}
+                    </p>
+                    <button
+                      className="font-medium transition-colors"
+                      style={{ color: theme.primaryColor }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedArticle(article);
+                      }}
+                    >
+                      Přečtěte si více →
+                    </button>
                   </div>
-                ) : (
-                  <div 
-                    className="h-48"
-                    style={{ 
-                      background: `linear-gradient(135deg, ${theme.primaryColor}40, ${theme.secondaryColor}40)` 
-                    }}
-                  ></div>
-                )}
-                <div className="p-6">
-                  <div className="flex items-center text-sm mb-3" style={{ color: `${theme.textColor}80` }}>
-                    <span>{article.date}</span>
-                    <span className="mx-2">•</span>
-                    <span>{article.readTime}</span>
-                  </div>
-                  <h3 
-                    className="text-xl font-semibold mb-3"
-                    style={{ color: theme.textColor }}
-                  >
-                    {article.title}
-                  </h3>
-                  <p 
-                    className="mb-4"
-                    style={{ color: `${theme.textColor}cc` }}
-                  >
-                    {article.excerpt}
-                  </p>
-                  <button 
-                    className="font-medium transition-colors"
-                    style={{ color: theme.primaryColor }}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setSelectedArticle(article);
-                    }}
-                  >
-                    Přečtěte si více →
-                  </button>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>
@@ -1268,89 +1313,94 @@ const App = () => {
   };
 
   // Přejmenováno z Omě na About
-  const About = () => (
-    <div 
-      className="py-16"
-      style={{ backgroundColor: `${theme.backgroundColor}cc`, ...getFlowerPattern() }}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h2 
-            className="text-3xl font-bold mb-4"
-            style={{ color: theme.textColor }}
+  const About = () => {
+    // Získáme cestu k obrázku "O mně"
+    const aboutImagePath = practiceInfo.aboutImage ? getImagePath(practiceInfo.aboutImage, aboutImagesContext) : '';
+
+    return (
+      <div
+        className="py-16"
+        style={{ backgroundColor: `${theme.backgroundColor}cc`, ...getFlowerPattern() }}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2
+              className="text-3xl font-bold mb-4"
+              style={{ color: theme.textColor }}
+            >
+              O mně
+            </h2>
+            <p
+              className="text-lg max-w-3xl mx-auto"
+              style={{ color: `${theme.textColor}cc` }}
+            >
+              {practiceInfo.aboutDescription || 'Sem něco napsat'}
+            </p>
+          </div>
+          <div
+            className="rounded-lg shadow-sm p-8"
+            style={{
+              backgroundColor: theme.cardBg,
+              border: `1px solid ${theme.primaryColor}`
+            }}
           >
-            O mně
-          </h2>
-          <p 
-            className="text-lg max-w-3xl mx-auto"
-            style={{ color: `${theme.textColor}cc` }}
-          >
-            {practiceInfo.aboutDescription || 'Sem něco napsat'}
-          </p>
-        </div>
-        <div 
-          className="rounded-lg shadow-sm p-8"
-          style={{ 
-            backgroundColor: theme.cardBg,
-            border: `1px solid ${theme.primaryColor}`
-          }}
-        >
-          <div className="flex flex-col md:flex-row gap-8">
-            <div className="md:w-1/3 flex justify-center">
-              <div className="relative">
-                {/* Obrázek z JSON */}
-                {practiceInfo.aboutImage ? (
-                  <img
-                    src={`/images/${practiceInfo.aboutImage}`}
-                    alt={practiceInfo.aboutImageAlt || "O mně - Logoped"}
-                    className="rounded-lg shadow-md w-full max-w-sm object-cover h-auto"
-                  />
-                ) : (
-                  <div 
-                    className="rounded-lg shadow-md w-full max-w-sm h-64 flex items-center justify-center"
-                    style={{ backgroundColor: theme.accentColor }}
-                  >
-                    <span style={{ color: theme.textColor }}>Obrázek není k dispozici</span>
-                  </div>
-                )}
-                <div 
-                  className="absolute inset-0 rounded-lg"
-                  style={{ 
-                    boxShadow: `0 0 0 2px ${theme.primaryColor}30` 
-                  }}
-                ></div>
+            <div className="flex flex-col md:flex-row gap-8">
+              <div className="md:w-1/3 flex justify-center">
+                <div className="relative">
+                  {/* Obrázek z JSON */}
+                  {practiceInfo.aboutImage ? (
+                    <img
+                      src={aboutImagePath}
+                      alt={practiceInfo.aboutImageAlt || "O mně - Logoped"}
+                      className="rounded-lg shadow-md w-full max-w-sm object-cover h-auto"
+                    />
+                  ) : (
+                    <div
+                      className="rounded-lg shadow-md w-full max-w-sm h-64 flex items-center justify-center"
+                      style={{ backgroundColor: theme.accentColor }}
+                    >
+                      <span style={{ color: theme.textColor }}>Obrázek není k dispozici</span>
+                    </div>
+                  )}
+                  <div
+                    className="absolute inset-0 rounded-lg"
+                    style={{
+                      boxShadow: `0 0 0 2px ${theme.primaryColor}30`
+                    }}
+                  ></div>
+                </div>
               </div>
-            </div>
-            <div className="md:w-2/3">
-              <div className="prose prose-lg max-w-none">
-                <p 
-                  className="mb-6"
-                  style={{ color: `${theme.textColor}cc` }}
-                  dangerouslySetInnerHTML={{ __html: practiceInfo.aboutContent || 'Obsah sekce O mně není k dispozici.' }}
-                />
+              <div className="md:w-2/3">
+                <div className="prose prose-lg max-w-none">
+                  <p
+                    className="mb-6"
+                    style={{ color: `${theme.textColor}cc` }}
+                    dangerouslySetInnerHTML={{ __html: practiceInfo.aboutContent || 'Obsah sekce O mně není k dispozici.' }}
+                  />
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   // Přejmenováno z Kontakt na Contact
   const Contact = () => (
-    <div 
+    <div
       className="py-16"
       style={{ backgroundColor: theme.backgroundColor, ...getFlowerPattern() }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h2 
+          <h2
             className="text-3xl font-bold mb-4"
             style={{ color: theme.textColor }}
           >
             Kontaktujte mě
           </h2>
-          <p 
+          <p
             className="text-lg"
             style={{ color: `${theme.textColor}cc` }}
           >
@@ -1359,28 +1409,28 @@ const App = () => {
         </div>
         <div className="grid lg:grid-cols-2 gap-12">
           <div>
-            <div 
+            <div
               className="rounded-lg p-8"
-              style={{ 
+              style={{
                 backgroundColor: theme.cardBg,
                 border: `1px solid ${theme.primaryColor}`
               }}
             >
-              <h3 
+              <h3
                 className="text-2xl font-semibold mb-6"
                 style={{ color: theme.textColor }}
               >
-                Kontaktní informace
+                Get in Touch
               </h3>
               <div className="space-y-6">
                 <div className="flex items-start">
-                  <MapPin 
-                    className="mr-4 mt-1" 
-                    size={24} 
+                  <MapPin
+                    className="mr-4 mt-1"
+                    size={24}
                     style={{ color: theme.primaryColor }}
                   />
                   <div>
-                    <h4 
+                    <h4
                       className="font-medium"
                       style={{ color: theme.textColor }}
                     >
@@ -1393,17 +1443,17 @@ const App = () => {
                   </div>
                 </div>
                 <div className="flex items-center">
-                  <Phone 
-                    className="mr-4" 
-                    size={24} 
+                  <Phone
+                    className="mr-4"
+                    size={24}
                     style={{ color: theme.primaryColor }}
                   />
                   <div>
-                    <h4 
+                    <h4
                       className="font-medium"
                       style={{ color: theme.textColor }}
                     >
-                      Telefon
+                      Phone
                     </h4>
                     <p style={{ color: `${theme.textColor}cc` }}>
                       {practiceInfo.phone}
@@ -1411,13 +1461,13 @@ const App = () => {
                   </div>
                 </div>
                 <div className="flex items-center">
-                  <Mail 
-                    className="mr-4" 
-                    size={24} 
+                  <Mail
+                    className="mr-4"
+                    size={24}
                     style={{ color: theme.primaryColor }}
                   />
                   <div>
-                    <h4 
+                    <h4
                       className="font-medium"
                       style={{ color: theme.textColor }}
                     >
@@ -1431,19 +1481,19 @@ const App = () => {
               </div>
             </div>
             {/* Fixed map container - now properly sized */}
-            <div 
+            <div
               className="rounded-lg p-0 mt-8"
-              style={{ 
-                backgroundColor: theme.cardBg, 
+              style={{
+                backgroundColor: theme.cardBg,
                 height: 'fit-content',
                 border: `1px solid ${theme.primaryColor}`
               }}
             >
-              <h3 
+              <h3
                 className="text-2xl font-semibold mb-4 p-6 pb-0"
                 style={{ color: theme.textColor }}
               >
-                Lokace kanceláře
+                Lokace ordinace
               </h3>
               <div className="rounded-lg overflow-hidden">
                 <iframe
@@ -1459,20 +1509,20 @@ const App = () => {
               </div>
             </div>
           </div>
-          <div 
+          <div
             className="rounded-lg p-8"
-            style={{ 
+            style={{
               backgroundColor: theme.cardBg,
               border: `1px solid ${theme.primaryColor}`
             }}
           >
-            <h3 
+            <h3
               className="text-2xl font-semibold mb-6"
               style={{ color: theme.textColor }}
             >
               Objednejte se k nám
             </h3>
-            <p 
+            <p
               className="mb-6"
               style={{ color: `${theme.textColor}cc` }}
             >
@@ -1480,12 +1530,12 @@ const App = () => {
             </p>
             <div className="space-y-4">
               <div className="flex items-center">
-                <Phone 
-                  className="mr-3" 
-                  size={20} 
+                <Phone
+                  className="mr-3"
+                  size={20}
                   style={{ color: theme.primaryColor }}
                 />
-                <span 
+                <span
                   className="font-medium"
                   style={{ color: theme.textColor }}
                 >
@@ -1493,12 +1543,12 @@ const App = () => {
                 </span>
               </div>
               <div className="flex items-center">
-                <Mail 
-                  className="mr-3" 
-                  size={20} 
+                <Mail
+                  className="mr-3"
+                  size={20}
                   style={{ color: theme.primaryColor }}
                 />
-                <span 
+                <span
                   className="font-medium"
                   style={{ color: theme.textColor }}
                 >
@@ -1507,7 +1557,7 @@ const App = () => {
               </div>
             </div>
             <div className="mt-8">
-              <h4 
+              <h4
                 className="text-lg font-semibold mb-4"
                 style={{ color: theme.textColor }}
               >
@@ -1519,7 +1569,7 @@ const App = () => {
                     <span style={{ color: `${theme.textColor}80` }}>
                       {hour.day}:
                     </span>
-                    <span 
+                    <span
                       className="font-medium"
                       style={{ color: theme.textColor }}
                     >
@@ -1537,19 +1587,19 @@ const App = () => {
 
   // Gallery component
   const Gallery = () => (
-    <div 
+    <div
       className="py-16"
       style={{ backgroundColor: theme.backgroundColor, ...getFlowerPattern() }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h2 
+          <h2
             className="text-3xl font-bold mb-4"
             style={{ color: theme.textColor }}
           >
             Galerie
           </h2>
-          <p 
+          <p
             className="text-lg"
             style={{ color: `${theme.textColor}cc` }}
           >
@@ -1557,22 +1607,26 @@ const App = () => {
           </p>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {galleryImages.map((image, index) => (
-            <div 
-              key={index} 
-              className="aspect-square overflow-hidden rounded-lg cursor-pointer"
-              onClick={() => {
-                setSelectedGalleryImage(image);
-                setIsGalleryOpen(true);
-              }}
-            >
-              <img 
-                src={`/images/gallery/${image.filename}`} 
-                alt={image.alt || `Galerie obrázek ${index + 1}`}
-                className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
-              />
-            </div>
-          ))}
+          {galleryImages.map((image, index) => {
+            // Získáme cestu k obrázku galerie
+            const galleryImagePath = getImagePath(image.filename, galleryImagesContext);
+            return (
+              <div
+                key={index}
+                className="aspect-square overflow-hidden rounded-lg cursor-pointer"
+                onClick={() => {
+                  setSelectedGalleryImage(image);
+                  setIsGalleryOpen(true);
+                }}
+              >
+                <img
+                  src={galleryImagePath}
+                  alt={image.alt || `Galerie obrázek ${index + 1}`}
+                  className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                />
+              </div>
+            );
+          })}
         </div>
       </div>
 
@@ -1586,8 +1640,9 @@ const App = () => {
             >
               <CloseIcon size={32} />
             </button>
-            <img 
-              src={`/images/gallery/${selectedGalleryImage.filename}`} 
+            {/* Získáme cestu k obrázku pro modální okno */}
+            <img
+              src={getImagePath(selectedGalleryImage.filename, galleryImagesContext)}
               alt={selectedGalleryImage.alt || 'Galerie obrázek'}
               className="max-w-full max-h-full object-contain"
             />
@@ -1640,7 +1695,7 @@ const App = () => {
   };
 
   return (
-    <div 
+    <div
       className="min-h-screen"
       style={{ backgroundColor: theme.backgroundColor, ...getFlowerPattern() }}
     >
@@ -1648,7 +1703,7 @@ const App = () => {
       <main>
         {renderContent()}
       </main>
-      <footer 
+      <footer
         className="py-12"
         style={{ backgroundColor: theme.footerBg }}
       >
@@ -1656,20 +1711,20 @@ const App = () => {
           <div className="grid md:grid-cols-3 gap-8">
             <div>
               <div className="flex items-center mb-4">
-                <div 
+                <div
                   className="w-10 h-10 rounded-full flex items-center justify-center"
                   style={{ backgroundColor: theme.primaryColor }}
                 >
                   <span className="text-white font-bold text-lg">PT</span>
                 </div>
-                <span 
+                <span
                   className="ml-3 text-xl font-bold"
                   style={{ color: theme.footerBg === '#000000' || theme.footerBg === 'black' ? 'white' : 'white' }}
                 >
                   {practiceInfo.name}
                 </span>
               </div>
-              <p 
+              <p
                 className="mb-4"
                 style={{ color: '#cbd5e1' }}
               >
@@ -1677,7 +1732,7 @@ const App = () => {
               </p>
             </div>
             <div>
-              <h3 
+              <h3
                 className="text-lg font-semibold mb-4"
                 style={{ color: 'white' }}
               >
@@ -1712,7 +1767,7 @@ const App = () => {
               </ul>
             </div>
             <div>
-              <h3 
+              <h3
                 className="text-lg font-semibold mb-4"
                 style={{ color: 'white' }}
               >
@@ -1723,11 +1778,10 @@ const App = () => {
                 <p>{practiceInfo.city}</p>
                 <p>{practiceInfo.phone}</p>
                 <p>{practiceInfo.email}</p>
-                <p>IČO: </p>
               </div>
             </div>
           </div>
-          <div 
+          <div
             className="border-t mt-8 pt-8 text-center"
             style={{ borderColor: '#334155', color: '#94a3b8' }}
           >
