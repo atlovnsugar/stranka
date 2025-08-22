@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
+// eslint-disable-next-line no-unused-vars
 import { MapPin, Phone, Mail, Clock, Menu, X, CreditCard, ChevronLeft, ChevronRight, X as CloseIcon } from 'lucide-react';
-
 const App = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   // Použijeme anglické klíče pro interní logiku
