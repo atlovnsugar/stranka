@@ -575,7 +575,7 @@ const App = () => {
       {isMenuOpen && (
         <div className="md:hidden">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3" style={{ backgroundColor: theme.headerBg, borderTop: `1px solid ${theme.accentColor}20` }}>
-            {['Home', 'Services', 'About', 'Pricing', 'Contact', 'Blog'].map((item) => (
+            {['Domácí stránka', 'Služby', 'O mě', 'Ceník', 'Kontakt', 'Blog'].map((item) => (
               <button
                 key={item}
                 onClick={() => {
@@ -719,7 +719,7 @@ const App = () => {
             className="text-lg max-w-2xl mx-auto"
             style={{ color: `${theme.textColor}cc` }}
           >
-            Comprehensive speech therapy services tailored to meet the unique needs of each client
+            Sem něco napsat o službách. Nebo o něčem jiném.
           </p>
         </div>
         <div className="grid md:grid-cols-2 gap-8">
@@ -1191,13 +1191,13 @@ const App = () => {
               className="text-3xl font-bold mb-4"
               style={{ color: theme.textColor }}
             >
-              Latest Articles
+              Nedávné články
             </h2>
             <p 
               className="text-lg"
               style={{ color: `${theme.textColor}cc` }}
             >
-              Insights and resources for communication wellness
+              Sem něco napsat
             </p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -1243,7 +1243,7 @@ const App = () => {
                       setSelectedArticle(article);
                     }}
                   >
-                    Read More →
+                    Přečtěte si více →
                   </button>
                 </div>
               </div>
@@ -1265,13 +1265,13 @@ const App = () => {
             className="text-3xl font-bold mb-4"
             style={{ color: theme.textColor }}
           >
-            About Us
+            O mně
           </h2>
           <p 
             className="text-lg max-w-3xl mx-auto"
             style={{ color: `${theme.textColor}cc` }}
           >
-            Dedicated to helping individuals of all ages achieve their communication goals
+            Sem něco napsat
           </p>
         </div>
         <div 
@@ -1355,13 +1355,13 @@ const App = () => {
             className="text-3xl font-bold mb-4"
             style={{ color: theme.textColor }}
           >
-            Contact Us
+            Kontaktujte mě
           </h2>
           <p 
             className="text-lg"
             style={{ color: `${theme.textColor}cc` }}
           >
-            We'd love to hear from you
+            Něco sem napsat
           </p>
         </div>
         <div className="grid lg:grid-cols-2 gap-12">
@@ -1391,7 +1391,7 @@ const App = () => {
                       className="font-medium"
                       style={{ color: theme.textColor }}
                     >
-                      Address
+                      Adresa
                     </h4>
                     <p style={{ color: `${theme.textColor}cc` }}>
                       {practiceInfo.address}<br />
@@ -1450,7 +1450,7 @@ const App = () => {
                 className="text-2xl font-semibold mb-4 p-6 pb-0"
                 style={{ color: theme.textColor }}
               >
-                Office Location
+                Lokace kanceláře
               </h3>
               <div className="rounded-lg overflow-hidden">
                 <iframe
@@ -1645,7 +1645,7 @@ const App = () => {
                 className="text-lg font-semibold mb-4"
                 style={{ color: 'white' }}
               >
-                Contact Info
+                Kontaktní informace
               </h3>
               <div className="space-y-2" style={{ color: '#cbd5e1' }}>
                 <p>{practiceInfo.address}</p>
