@@ -1165,7 +1165,7 @@ const App = () => {
                   size={24}
                   style={{ color: theme.primaryColor }}
                 />
-                <span style={{ color: theme.textColor }}>Location</span>
+                <span style={{ color: theme.textColor }}>Lokace a kontakt</span>
               </h3>
               <div className="space-y-4">
                 <div className="flex items-start">
@@ -1761,7 +1761,7 @@ const App = () => {
             style={{ borderColor: '#334155', color: '#94a3b8' }}
           >
             <p>&copy; 2025 {practiceInfo.name}</p>
-            <p>Všechny práva vyhrazena.</p>
+            <p>Všechna práva vyhrazena.</p>
             <p>Vytvořil Vojtěch Tabačík</p>
           </div>
         </div>
