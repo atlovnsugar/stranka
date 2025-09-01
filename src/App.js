@@ -1776,7 +1776,7 @@ const GalleryModal = ({ images, initialImage, onClose, getImageUrl }) => {
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <div className="flex-shrink-0 flex items-center">
-               <img src="/local_3.svg" alt="Logo" className="mr-2 w-10 h-10 flex-shrink-0" style={{ filter: 'brightness(0) saturate(100%) invert(19%) sepia(84%) saturate(1916%) hue-rotate(204deg) brightness(95%) contrast(92%)' }}
+               <img src="/local_3.svg" alt="Logo" className="mr-2 w-14 h-14 flex-shrink-0" style={{ filter: 'brightness(0) saturate(100%) invert(19%) sepia(84%) saturate(1916%) hue-rotate(204deg) brightness(95%) contrast(92%)' }}
     />
               <div
                 className="w-10 h-10 rounded-full flex items-center justify-center"
@@ -1883,7 +1883,7 @@ const GalleryModal = ({ images, initialImage, onClose, getImageUrl }) => {
                   src="/local_3.svg"
                   alt="Logo"
                   // Added inline-block and align-middle for better control, kept mr-2 for spacing, w-10 h-10 for size
-                  className="inline-block align-middle mr-2 w-10 h-10 flex-shrink-0"
+                  className="inline-block align-middle mr-2 w-14 h-14 flex-shrink-0"
                   // Apply filter to change black (#000) to white (#FFF). Assumes the SVG paths are filled with #000.
                   style={{ filter: 'brightness(0) invert(1)' }}
                 />
