@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback  } from 'react';
 import { MapPin, Phone, Mail, Clock, Menu, X, CreditCard, ChevronLeft, ChevronRight, X as CloseIcon } from 'lucide-react';
 
 const App = () => {
@@ -634,16 +634,30 @@ const App = () => {
               ← Back to Blog
             </button>
             <article
-              className="rounded-lg shadow-sm p-8"
-              style={{
-                backgroundColor: theme.cardBg,
-                border: `1px solid ${theme.primaryColor}`
-              }}
+              id={`article-content-${selectedArticle.id || selectedArticle.title.replace(/\s+/g, '-').toLowerCase()}`}
+              className="rounded-lg shadow-sm p-8 article-content-wrapper"
+              style={{ backgroundColor: theme.cardBg, border: `1px solid ${theme.primaryColor}` }}
             >
-              <h1
-                className="text-3xl font-bold mb-4"
-                style={{ color: theme.textColor }}
-              >
+              {/* Correctly Injected CSS using a <style> tag with a template string */}
+              <style>
+                {`
+                  /* Injected CSS for article images - using ID for maximum specificity */
+                  #article-content-${selectedArticle.id || selectedArticle.title.replace(/\s+/g, '-').toLowerCase()} .prose img,
+                  #article-content-${selectedArticle.id || selectedArticle.title.replace(/\s+/g, '-').toLowerCase()} img {
+                    max-width: 100% !important;
+                    width: 100% !important;
+                    height: 300px !important; /* <<< Adjust this fixed height value as needed */
+                    object-fit: contain !important; /* Ensures the entire image is visible */
+                    display: block !important;
+                    margin-left: auto !important;
+                    margin-right: auto !important;
+                    margin-top: 1.5rem !important;
+                    margin-bottom: 1.5rem !important;
+                    border-radius: 0.5rem !important;
+                  }
+                `}
+              </style>
+              <h1 className="text-3xl font-bold mb-4" style={{ color: theme.textColor }}>
                 {selectedArticle.title}
               </h1>
               <div className="flex items-center text-sm mb-6" style={{ color: `${theme.textColor}cc` }}>
@@ -651,19 +665,18 @@ const App = () => {
                 <span className="mx-2">•</span>
                 <span>{selectedArticle.readTime}</span>
               </div>
-
               {selectedArticle.image && (
                 <div className="mb-6">
                   <img
-                    src={articleImageUrl}
+                    src={articleImageUrl} // Assuming articleImageUrl is defined earlier
                     alt={selectedArticle.title}
-                    className="w-full h-auto rounded-lg shadow-md"
+                    className="w-full h-auto rounded-lg shadow-md" // This main image styling can stay as is
                   />
                 </div>
               )}
-
+              {/* Apply the 'prose' class here for the content */}
               <div
-                className="prose prose-lg max-w-none"
+                className="prose prose-lg max-w-none" // Removed 'article-content' class, relying on ID and injected CSS
                 style={{ color: theme.textColor }}
                 dangerouslySetInnerHTML={{ __html: selectedArticle.content }}
               />
@@ -879,31 +892,209 @@ const App = () => {
       </div>
 
       {isGalleryOpen && selectedGalleryImage && (
-        <div className="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center p-4">
-          <div className="relative max-w-4xl max-h-full">
-            <button
-              className="absolute top-4 right-4 text-white z-10"
-              onClick={() => setIsGalleryOpen(false)}
-            >
-              <CloseIcon size={32} />
-            </button>
-            {/* Použití getImageUrl pro obrázek v modálním okně */}
-            <img
-              src={getImageUrl(selectedGalleryImage.filename, '/images/gallery/')}
-              alt={selectedGalleryImage.alt || 'Galerie obrázek'}
-              className="max-w-full max-h-full object-contain"
-            />
-            {selectedGalleryImage.caption && (
-              <div className="absolute bottom-4 left-0 right-0 text-center text-white bg-black bg-opacity-50 p-2">
-                {selectedGalleryImage.caption}
-              </div>
-            )}
-          </div>
-        </div>
+        <GalleryModal
+          images={galleryImages}
+          initialImage={selectedGalleryImage}
+          onClose={() => setIsGalleryOpen(false)}
+          getImageUrl={getImageUrl} // Pass the getImageUrl function
+        />
       )}
     </div>
   );
+  // --- Add this new component ---
+const GalleryModal = ({ images, initialImage, onClose, getImageUrl }) => {
+  const [currentIndex, setCurrentIndex] = useState(images.findIndex(img => img.filename === initialImage.filename));
+  const [zoomed, setZoomed] = useState(false);
+  const [touchStartX, setTouchStartX] = useState(0);
 
+  const currentImage = images[currentIndex];
+
+  const goToPrev = useCallback(() => {
+    setCurrentIndex((prev) => (prev > 0 ? prev - 1 : images.length - 1));
+    setZoomed(false); // Reset zoom when navigating
+  }, [images.length]);
+
+  const goToNext = useCallback(() => {
+    setCurrentIndex((prev) => (prev < images.length - 1 ? prev + 1 : 0));
+    setZoomed(false); // Reset zoom when navigating
+  }, [images.length]);
+
+  const handleKeyDown = useCallback((e) => {
+    if (e.key === 'Escape') {
+      onClose();
+    } else if (e.key === 'ArrowLeft') {
+      goToPrev();
+    } else if (e.key === 'ArrowRight') {
+      goToNext();
+    }
+  }, [goToNext, goToPrev, onClose]);
+
+  const handleWheel = useCallback((e) => {
+    // Optional: Use Ctrl+Scroll to zoom if desired, or just prevent page scroll
+    // if (e.ctrlKey) {
+    //   e.preventDefault();
+    //   setZoomed(prev => !prev); // Example: Ctrl+Scroll toggles zoom
+    // }
+    // Prevent background scrolling
+    e.preventDefault();
+  }, []);
+
+  useEffect(() => {
+    // Ensure currentIndex is valid if images change (less likely here, but good practice)
+    if (currentIndex >= images.length || currentIndex < 0) {
+       setCurrentIndex(0);
+    }
+  }, [currentIndex, images.length]);
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown);
+    // Add wheel listener to the modal content to prevent background scroll
+    const modalContent = document.querySelector('.gallery-modal-content');
+    if (modalContent) {
+        modalContent.addEventListener('wheel', handleWheel, { passive: false });
+    }
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      if (modalContent) {
+        modalContent.removeEventListener('wheel', handleWheel);
+      }
+    };
+  }, [handleKeyDown, handleWheel]);
+
+  // Touch swipe handlers
+  const handleTouchStart = (e) => {
+    setTouchStartX(e.touches[0].clientX);
+  };
+
+  const handleTouchEnd = (e) => {
+    if (!e.changedTouches[0]) return;
+    const touchEndX = e.changedTouches[0].clientX;
+    const diff = touchStartX - touchEndX;
+
+    // Adjust the threshold as needed
+    if (Math.abs(diff) > 50) {
+      if (diff > 0) {
+        // Swipe left - Next image
+        goToNext();
+      } else {
+        // Swipe right - Previous image
+        goToPrev();
+      }
+    }
+  };
+
+  const imageUrl = getImageUrl(currentImage.filename, '/images/gallery/');
+
+  // --- Determine image display style based on zoom state ---
+  const imageStyle = {
+    maxWidth: '100%',
+    maxHeight: '100%',
+    width: zoomed ? 'auto' : '100%', // 'auto' allows potential overflow for large images if zoomed
+    height: zoomed ? 'auto' : '100%', // 'auto' allows potential overflow for large images if zoomed
+    objectFit: 'contain', // Crucial for keeping aspect ratio within container
+    cursor: zoomed ? 'zoom-out' : 'zoom-in', // Visual cue for zoom state
+    transition: 'transform 0.2s ease, width 0.3s ease, height 0.3s ease', // Smooth transition for zoom
+    transform: zoomed ? 'scale(1)' : 'scale(1)', // Ensure initial scale is 1
+    // Allow image to overflow container when zoomed, but stay centered
+    // The parent container will handle scrolling if needed
+  };
+
+  // --- Style for the container that holds the image ---
+  // This container will manage the scrollable area when zoomed
+  const imageContainerStyle = {
+    position: 'relative',
+    width: '100%',
+    height: 'calc(100vh - 120px)', // Adjust height to leave space for caption/buttons
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: zoomed ? 'auto' : 'hidden', // Allow scrolling when zoomed
+    // Ensure the container itself doesn't cause horizontal scroll on the body
+    scrollbarWidth: 'thin', // For Firefox
+    scrollbarColor: 'rgba(255, 255, 255, 0.5) transparent', // For Firefox
+  };
+
+  // Custom scrollbar styles for Webkit browsers
+  const customScrollbarStyle = `
+    .gallery-modal-content::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    .gallery-modal-content::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .gallery-modal-content::-webkit-scrollbar-thumb {
+      background-color: rgba(255, 255, 255, 0.5);
+      border-radius: 4px;
+    }
+    .gallery-modal-content::-webkit-scrollbar-thumb:hover {
+      background-color: rgba(255, 255, 255, 0.7);
+    }
+  `;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-95 z-50 flex flex-col items-center justify-center p-4">
+      {/* Inject custom scrollbar styles */}
+      <style>{customScrollbarStyle}</style>
+      <div
+        className="gallery-modal-content relative w-full h-full flex flex-col items-center justify-center" // Added class for scrollbar targeting
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
+        {/* Navigation Arrows */}
+        <button
+          className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white z-20 p-2 rounded-full bg-black bg-opacity-30 hover:bg-opacity-50 transition-all"
+          onClick={goToPrev}
+          aria-label="Previous image"
+        >
+          <ChevronLeft size={32} />
+        </button>
+        <button
+          className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white z-20 p-2 rounded-full bg-black bg-opacity-30 hover:bg-opacity-50 transition-all"
+          onClick={goToNext}
+          aria-label="Next image"
+        >
+          <ChevronRight size={32} />
+        </button>
+
+        {/* Close Button */}
+        <button
+          className="absolute top-4 right-4 text-white z-20 p-2 rounded-full bg-black bg-opacity-30 hover:bg-opacity-50 transition-all"
+          onClick={onClose}
+          aria-label="Close gallery"
+        >
+          <CloseIcon size={32} />
+        </button>
+
+        {/* Image Container */}
+        <div style={imageContainerStyle}>
+           {/* Clickable Image */}
+          <img
+            src={imageUrl}
+            alt={currentImage.alt || 'Galerie obrázek'}
+            style={imageStyle}
+            onClick={() => setZoomed(!zoomed)} // Toggle zoom on click
+            className={zoomed ? 'cursor-zoom-out' : 'cursor-zoom-in'} // Ensure cursor updates
+          />
+        </div>
+
+        {/* Caption */}
+        {currentImage.caption && (
+          <div className="absolute bottom-4 left-0 right-0 text-center text-white bg-black bg-opacity-50 p-2 z-10 text-sm md:text-base">
+            {currentImage.caption} {/* Display current image caption */}
+          </div>
+        )}
+
+        {/* Image Counter */}
+        <div className="absolute top-4 left-4 text-white bg-black bg-opacity-30 px-2 py-1 rounded text-sm z-10">
+          {currentIndex + 1} / {images.length}
+        </div>
+      </div>
+    </div>
+  );
+};
+// --- End of new component ---
   // --- renderContent a další části zůstávají stejné ---
   const renderContent = () => {
     switch (activeSection) {
@@ -1684,16 +1875,31 @@ const App = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-3 gap-8">
             <div>
+              
               <div className="flex items-center mb-4">
+                <img
+                  src="/local_3.svg"
+                  alt="Logo"
+                  // Added inline-block and align-middle for better control, kept mr-2 for spacing, w-10 h-10 for size
+                  className="inline-block align-middle mr-2 w-10 h-10 flex-shrink-0"
+                  // Apply filter to change black (#000) to white (#FFF). Assumes the SVG paths are filled with #000.
+                  style={{ filter: 'brightness(0) invert(1)' }}
+                />
+                {/* Container for PT circle and logo */}
                 <div
-                  className="w-10 h-10 rounded-full flex items-center justify-center"
-                  style={{ backgroundColor: theme.primaryColor }}
+                  className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 relative" // Added 'relative' for positioning context
                 >
-                  <span className="text-white font-bold text-lg">PT</span>
+                  {/* Background circle for PT */}
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center absolute" style={{ backgroundColor: theme.primaryColor }}></div>
+                  {/* PT Text - Ensure it's above the background */}
+                  <span className="text-white font-bold text-lg relative z-10">PT</span>
                 </div>
+                {/* Logo Image - Placed here, next to PT */}
+                {/* Make sure '/your-logo.svg' is the correct path to your SVG in the 'public' folder */}
+                {/* Adjust ml-2, w-6, h-6 as needed */}
                 <span
                   className="ml-3 text-xl font-bold"
-                  style={{ color: theme.footerBg === '#000000' || theme.footerBg === 'black' ? 'white' : 'white' }}
+                  style={{ color: theme.footerBg === '#000000' || theme.footerBg === 'black' ? 'white' : 'white', wordWrap: 'break-word', overflowWrap: 'break-word' }}
                 >
                   {practiceInfo.name}
                 </span>
