@@ -545,14 +545,20 @@ const App = () => {
                     key={index}
                     src={imageUrl}
                     alt={`Hero Background ${index + 1}`}
-                    className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
-                      index === currentHeroImageIndex ? 'opacity-20' : 'opacity-0'
-                    }`}
+                    className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${index === currentHeroImageIndex ? 'opacity-50' : 'opacity-0'}`}
                   />
                 );
               })}
             </>
           )}
+          {/* Fade Overlay for smooth transition at the bottom */}
+          <div
+            className="absolute inset-x-0 bottom-0 h-12 pointer-events-none" // h-32 = 128px fade height, adjust as needed
+            style={{
+              // Gradient goes from theme background color at the bottom to transparent at the top
+              background: `linear-gradient(to top, ${theme.backgroundColor}, transparent)`,
+            }}
+          ></div>
         </div>
         {/* ... zbytek Hero komponenty zůstává stejný ... */}
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -563,7 +569,7 @@ const App = () => {
             {practiceInfo.title || 'Logopedie Petra Tabačíková'}
           </h1>
           <p
-            className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto"
+            className="text-xl md:text-2xl mb-8 max-w-3xl font-bold mx-auto"
             style={{ color: `${theme.textColor}cc` }}
           >
             {practiceInfo.subtitle || 'Specializovaná logopedická péče pro děti i dospělé'}
