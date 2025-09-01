@@ -1776,6 +1776,8 @@ const GalleryModal = ({ images, initialImage, onClose, getImageUrl }) => {
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <div className="flex-shrink-0 flex items-center">
+               <img src="/local_3.svg" alt="Logo" className="mr-2 w-10 h-10 flex-shrink-0" style={{ filter: 'brightness(0) saturate(100%) invert(19%) sepia(84%) saturate(1916%) hue-rotate(204deg) brightness(95%) contrast(92%)' }}
+    />
               <div
                 className="w-10 h-10 rounded-full flex items-center justify-center"
                 style={{ backgroundColor: theme.primaryColor }}
