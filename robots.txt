@@ -1,0 +1,4 @@
+User-agent: *
+Disallow:
+
+Sitemap: https://www.logopedietabacikova.cz/sitemap.xml

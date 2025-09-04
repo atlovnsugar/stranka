@@ -1776,96 +1776,131 @@ const GalleryModal = ({ images, initialImage, onClose, getImageUrl }) => {
     </div>
   );
 
-  const Navigation = () => (
-    <nav className={`shadow-lg sticky top-0 z-50`} style={{ backgroundColor: theme.headerBg }}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
-          <div className="flex items-center">
-            <div className="flex-shrink-0 flex items-center">
-               <img src="/local_3.svg" alt="Logo" className="mr-2 w-14 h-14 flex-shrink-0" style={{ filter: 'brightness(0) saturate(100%) invert(19%) sepia(84%) saturate(1916%) hue-rotate(204deg) brightness(95%) contrast(92%)' }}
-    />
-              <div
-                className="w-10 h-10 rounded-full flex items-center justify-center"
-                style={{ backgroundColor: theme.primaryColor }}
-              >
-                <span className="text-white font-bold text-lg">PT</span>
-              </div>
-              <span
-                className="ml-3 text-xl font-bold"
-                style={{ color: theme.headerBg === '#000000' || theme.headerBg === 'black' ? 'white' : theme.textColor }}
-              >
-                {practiceInfo.name}
-              </span>
-            </div>
-          </div>
-          <div className="hidden md:flex items-center space-x-8">
-            {/* Mapujeme pole objektů se čtyřmi vlastnostmi: label (zobrazení), key (interní identifikátor) */}
-            {[
-              { label: 'Hlavní stránka', key: 'home' },
-              { label: 'Služby', key: 'services' },
-              { label: 'O mě', key: 'about' },
-              { label: 'Ceník', key: 'pricing' },
-              { label: 'Kontakt', key: 'contact' },
-              { label: 'Blog', key: 'blog' },
-              { label: 'Galerie', key: 'gallery' }
-            ].map((item) => (
-              <button
-                key={item.key} // Použijeme unikátní klíč
-                onClick={() => setActiveSection(item.key)} // Nastavujeme interní klíč
-                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors`}
-                style={{
-                  color: activeSection === item.key ? theme.primaryColor : (theme.headerBg === '#000000' || theme.headerBg === 'black' ? 'white' : theme.textColor),
-                  backgroundColor: activeSection === item.key ? `${theme.primaryColor}20` : 'transparent'
-                }}
-              >
-                {item.label} {/* Zobrazujeme český štítek */}
-              </button>
-            ))}
-          </div>
-          <div className="md:hidden flex items-center">
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-md focus:outline-none"
-              style={{ color: theme.headerBg === '#000000' || theme.headerBg === 'black' ? 'white' : theme.textColor }}
+const Navigation = () => (
+  <nav className={`shadow-lg sticky top-0 z-50`} style={{ backgroundColor: theme.headerBg }}>
+    {/* Ensure padding is consistent and doesn't contribute to overflow */}
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Use 'min-w-0' on the flex container to allow children to shrink if needed */}
+      <div className="flex justify-between h-16 min-w-0"> {/* Added min-w-0 */}
+        {/* Left side: Logo, PT circle, Company Name */}
+        {/* Use 'min-w-0' and 'flex-shrink' to manage space */}
+        <div className="flex items-center min-w-0 flex-shrink"> {/* Added min-w-0 and flex-shrink */}
+          <div className="flex-shrink-0 flex items-center">
+            {/* SVG Logo - Slightly reduced size for better fit on very small screens if needed */}
+            <img
+              src="/local_3.svg"
+              alt="Logo"
+              className="mr-2 w-10 h-10 flex-shrink-0" 
+              style={{
+                filter: 'brightness(0) saturate(100%) invert(19%) sepia(84%) saturate(1916%) hue-rotate(204deg) brightness(95%) contrast(92%)',
+              }}
+            />
+            {/* PT Circle */}
+            <div
+              className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
+              style={{ backgroundColor: theme.primaryColor }}
             >
-              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
+              <span className="text-white font-bold text-lg">PT</span>
+            </div>
+            {/* Company Name - Allow shrinking and wrapping if absolutely necessary, but prefer truncation over overflow */}
+            {/* Use 'truncate' to prevent text overflow, but ensure it has space */}
+            {/* 'flex-shrink' allows it to give space, 'min-w-0' on parent allows it */}
+            <span
+              className="ml-3 text-xl font-bold truncate" // Added 'truncate' to prevent overflow
+              style={{
+                color: theme.headerBg === '#000000' || theme.headerBg === 'black' ? 'white' : theme.textColor,
+              }}
+            >
+              {practiceInfo.name}
+            </span>
           </div>
+        </div>
+
+        {/* Desktop Menu - Hidden on mobile */}
+        <div className="hidden md:flex items-center space-x-4 xl:space-x-8"> {/* Reduced space-x on smaller desktop sizes if needed */}
+          {/* Mapujeme pole objektů se čtyřmi vlastnostmi: label (zobrazení), key (interní identifikátor) */}
+          {[
+            { label: 'Hlavní stránka', key: 'home' },
+            { label: 'Služby', key: 'services' },
+            { label: 'O mě', key: 'about' },
+            { label: 'Ceník', key: 'pricing' },
+            { label: 'Kontakt', key: 'contact' },
+            { label: 'Blog', key: 'blog' },
+            { label: 'Galerie', key: 'gallery' }
+          ].map((item) => (
+            <button
+              key={item.key}
+              onClick={() => setActiveSection(item.key)}
+              className={`px-2 py-2 rounded-md text-sm font-medium transition-colors whitespace-nowrap`} // Added whitespace-nowrap
+              style={{
+                color: activeSection === item.key ? theme.primaryColor : (theme.headerBg === '#000000' || theme.headerBg === 'black' ? 'white' : theme.textColor),
+                backgroundColor: activeSection === item.key ? `${theme.primaryColor}20` : 'transparent'
+              }}
+            >
+              {item.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Mobile Menu Button */}
+        <div className="md:hidden flex items-center">
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="inline-flex items-center justify-center p-2 rounded-md focus:outline-none"
+            style={{ color: theme.headerBg === '#000000' || theme.headerBg === 'black' ? 'white' : theme.textColor }}
+            aria-label={isMenuOpen ? "Zavřít menu" : "Otevřít menu"} // Added aria-label for accessibility
+          >
+            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
         </div>
       </div>
-      {isMenuOpen && (
-        <div className="md:hidden">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3" style={{ backgroundColor: theme.headerBg, borderTop: `1px solid ${theme.accentColor}20` }}>
-            {/* Stejná logika pro mobilní menu */}
-            {[
-              { label: 'Hlavní stránka', key: 'home' },
-              { label: 'Služby', key: 'services' },
-              { label: 'O mě', key: 'about' },
-              { label: 'Ceník', key: 'pricing' },
-              { label: 'Kontakt', key: 'contact' },
-              { label: 'Blog', key: 'blog' },
-              { label: 'Galerie', key: 'gallery' }
-            ].map((item) => (
-              <button
-                key={item.key}
-                onClick={() => {
-                  setActiveSection(item.key); // Nastavujeme interní klíč
-                  setIsMenuOpen(false);
-                }}
-                className={`block px-3 py-2 rounded-md text-base font-medium w-full text-left`}
-                style={{
-                  color: activeSection === item.key ? theme.primaryColor : (theme.headerBg === '#000000' || theme.headerBg === 'black' ? 'white' : theme.textColor),
-                  backgroundColor: activeSection === item.key ? `${theme.primaryColor}20` : 'transparent'
-                }}
-              >
-                {item.label} {/* Zobrazujeme český štítek */}
-              </button>
-            ))}
-          </div>
+    </div>
+
+    {/* Mobile Dropdown Menu */}
+    {/* Ensure the dropdown itself doesn't cause overflow */}
+    {isMenuOpen && (
+      <div className="md:hidden">
+        <div
+          className="px-2 pt-2 pb-3 space-y-1 sm:px-3" // Keep standard padding
+          style={{
+            backgroundColor: theme.headerBg,
+            borderTop: `1px solid ${theme.accentColor}20`,
+            // Add max-width and margin to ensure it fits within viewport
+            maxWidth: '100vw', // Explicitly constrain width
+            marginLeft: 'auto',
+            marginRight: 'auto',
+          }}
+        >
+          {/* Stejná logika pro mobilní menu */}
+          {[
+            { label: 'Hlavní stránka', key: 'home' },
+            { label: 'Služby', key: 'services' },
+            { label: 'O mě', key: 'about' },
+            { label: 'Ceník', key: 'pricing' },
+            { label: 'Kontakt', key: 'contact' },
+            { label: 'Blog', key: 'blog' },
+            { label: 'Galerie', key: 'gallery' }
+          ].map((item) => (
+            <button
+              key={item.key}
+              onClick={() => {
+                setActiveSection(item.key);
+                setIsMenuOpen(false);
+              }}
+              className={`block px-3 py-2 rounded-md text-base font-medium w-full text-left`}
+              style={{
+                color: activeSection === item.key ? theme.primaryColor : (theme.headerBg === '#000000' || theme.headerBg === 'black' ? 'white' : theme.textColor),
+                backgroundColor: activeSection === item.key ? `${theme.primaryColor}20` : 'transparent'
+              }}
+            >
+              {item.label}
+            </button>
+          ))}
         </div>
-      )}
-    </nav>
-  );
+      </div>
+    )}
+  </nav>
+);
 
   return (
     <div
