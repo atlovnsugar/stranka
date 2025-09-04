@@ -1778,35 +1778,44 @@ const GalleryModal = ({ images, initialImage, onClose, getImageUrl }) => {
 
 const Navigation = () => (
   <nav className={`shadow-lg sticky top-0 z-50`} style={{ backgroundColor: theme.headerBg }}>
-    {/* Ensure padding is consistent and doesn't contribute to overflow */}
+    {/* Ensure padding is consistent */}
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      {/* Use 'min-w-0' on the flex container to allow children to shrink if needed */}
-      <div className="flex justify-between h-16 min-w-0"> {/* Added min-w-0 */}
-        {/* Left side: Logo, PT circle, Company Name */}
-        {/* Use 'min-w-0' and 'flex-shrink' to manage space */}
-        <div className="flex items-center min-w-0 flex-shrink"> {/* Added min-w-0 and flex-shrink */}
-          <div className="flex-shrink-0 flex items-center">
-            {/* SVG Logo - Slightly reduced size for better fit on very small screens if needed */}
+      {/* Main flex container: Distribute space between logo/name block and menu button */}
+      {/* 'min-w-0' is crucial to prevent flex items from overflowing their container */}
+      <div className="flex justify-between h-16 min-w-0"> {/* Keep min-w-0 */}
+
+        {/* Left Block: Logo, PT Circle, Company Name */}
+        {/* This entire block needs to be managed to not overflow */}
+        <div className="flex items-center min-w-0"> {/* Keep min-w-0 here too */}
+
+          {/* Inner Flex Container for Logo, PT, Name */}
+          {/* Use 'flex-nowrap' to keep items in a line and 'min-w-0' to allow shrinking */}
+          <div className="flex items-center flex-nowrap min-w-0 flex-shrink"> {/* Added flex-nowrap, flex-shrink */}
+
+            {/* SVG Logo - Keep size fixed but ensure it doesn't contribute to overflow issues */}
             <img
               src="/local_3.svg"
               alt="Logo"
-              className="mr-2 w-10 h-10 flex-shrink-0" 
+              className="mr-2 w-10 h-10 flex-shrink-0" {/* Ensure logo doesn't shrink */}
               style={{
                 filter: 'brightness(0) saturate(100%) invert(19%) sepia(84%) saturate(1916%) hue-rotate(204deg) brightness(95%) contrast(92%)',
               }}
             />
-            {/* PT Circle */}
+
+            {/* PT Circle - Keep size fixed */}
             <div
-              className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
+              className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" {/* Ensure circle doesn't shrink */}
               style={{ backgroundColor: theme.primaryColor }}
             >
               <span className="text-white font-bold text-lg">PT</span>
             </div>
-            {/* Company Name - Allow shrinking and wrapping if absolutely necessary, but prefer truncation over overflow */}
-            {/* Use 'truncate' to prevent text overflow, but ensure it has space */}
-            {/* 'flex-shrink' allows it to give space, 'min-w-0' on parent allows it */}
+
+            {/* Company Name - This is the most likely element to need space management -->
+            <!-- Use 'truncate' to prevent text overflow -->
+            <!-- 'min-w-0' on parent flex containers allows this to shrink -->
+            <!-- Potentially reduce text size on smaller screens if needed -->
             <span
-              className="ml-3 text-xl font-bold truncate" // Added 'truncate' to prevent overflow
+              className="ml-3 text-lg sm:text-xl font-bold truncate" // Slightly reduced base size (text-lg), larger on sm+
               style={{
                 color: theme.headerBg === '#000000' || theme.headerBg === 'black' ? 'white' : theme.textColor,
               }}
@@ -1817,8 +1826,9 @@ const Navigation = () => (
         </div>
 
         {/* Desktop Menu - Hidden on mobile */}
-        <div className="hidden md:flex items-center space-x-4 xl:space-x-8"> {/* Reduced space-x on smaller desktop sizes if needed */}
-          {/* Mapujeme pole objektů se čtyřmi vlastnostmi: label (zobrazení), key (interní identifikátor) */}
+        {/* Reduce spacing between items on smaller desktop screens if needed */}
+        <div className="hidden md:flex items-center space-x-2 lg:space-x-4 xl:space-x-6"> {/* Reduced space-x */}
+          {/* Navigation Items */}
           {[
             { label: 'Hlavní stránka', key: 'home' },
             { label: 'Služby', key: 'services' },
@@ -1831,6 +1841,7 @@ const Navigation = () => (
             <button
               key={item.key}
               onClick={() => setActiveSection(item.key)}
+              // Use 'whitespace-nowrap' to prevent button text from wrapping, contributing to width
               className={`px-2 py-2 rounded-md text-sm font-medium transition-colors whitespace-nowrap`} // Added whitespace-nowrap
               style={{
                 color: activeSection === item.key ? theme.primaryColor : (theme.headerBg === '#000000' || theme.headerBg === 'black' ? 'white' : theme.textColor),
@@ -1842,13 +1853,13 @@ const Navigation = () => (
           ))}
         </div>
 
-        {/* Mobile Menu Button */}
+        {/* Mobile Menu Button - Always visible on small screens */}
         <div className="md:hidden flex items-center">
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className="inline-flex items-center justify-center p-2 rounded-md focus:outline-none"
             style={{ color: theme.headerBg === '#000000' || theme.headerBg === 'black' ? 'white' : theme.textColor }}
-            aria-label={isMenuOpen ? "Zavřít menu" : "Otevřít menu"} // Added aria-label for accessibility
+            aria-label={isMenuOpen ? "Zavřít menu" : "Otevřít menu"}
           >
             {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -1856,22 +1867,21 @@ const Navigation = () => (
       </div>
     </div>
 
-    {/* Mobile Dropdown Menu */}
-    {/* Ensure the dropdown itself doesn't cause overflow */}
+    {/* Mobile Dropdown Menu - Ensure it doesn't cause overflow */}
     {isMenuOpen && (
       <div className="md:hidden">
         <div
-          className="px-2 pt-2 pb-3 space-y-1 sm:px-3" // Keep standard padding
+          className="px-2 pt-2 pb-3 space-y-1 sm:px-3"
           style={{
             backgroundColor: theme.headerBg,
             borderTop: `1px solid ${theme.accentColor}20`,
-            // Add max-width and margin to ensure it fits within viewport
-            maxWidth: '100vw', // Explicitly constrain width
+            // Explicitly constrain width to prevent overflow
+            maxWidth: '100vw',
             marginLeft: 'auto',
             marginRight: 'auto',
           }}
         >
-          {/* Stejná logika pro mobilní menu */}
+          {/* Mobile Navigation Items */}
           {[
             { label: 'Hlavní stránka', key: 'home' },
             { label: 'Služby', key: 'services' },
