@@ -1778,7 +1778,6 @@ const GalleryModal = ({ images, initialImage, onClose, getImageUrl }) => {
 
 const Navigation = () => (
   <nav className={`shadow-lg sticky top-0 z-50`} style={{ backgroundColor: theme.headerBg }}>
-    {/* Ensure padding is consistent */}
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       {/* Main flex container: Distribute space between logo/name block and menu button */}
       {/* 'min-w-0' is crucial to prevent flex items from overflowing their container */}
@@ -1792,11 +1791,11 @@ const Navigation = () => (
           {/* Use 'flex-nowrap' to keep items in a line and 'min-w-0' to allow shrinking */}
           <div className="flex items-center flex-nowrap min-w-0 flex-shrink"> {/* Added flex-nowrap, flex-shrink */}
 
-            {/* SVG Logo - Keep size fixed but ensure it doesn't contribute to overflow issues */}
+            
             <img
               src="/local_3.svg"
               alt="Logo"
-              className="mr-2 w-10 h-10 flex-shrink-0" {/* Ensure logo doesn't shrink */}
+              className="mr-2 w-10 h-10 flex-shrink-0"
               style={{
                 filter: 'brightness(0) saturate(100%) invert(19%) sepia(84%) saturate(1916%) hue-rotate(204deg) brightness(95%) contrast(92%)',
               }}
