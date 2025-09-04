@@ -1779,19 +1779,14 @@ const GalleryModal = ({ images, initialImage, onClose, getImageUrl }) => {
 const Navigation = () => (
   <nav className={`shadow-lg sticky top-0 z-50`} style={{ backgroundColor: theme.headerBg }}>
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      {/* Main flex container: Distribute space between logo/name block and menu button */}
-      {/* 'min-w-0' is crucial to prevent flex items from overflowing their container */}
-      <div className="flex justify-between h-16 min-w-0"> {/* Keep min-w-0 */}
-
+      {/* Main flex container: Distribute space between logo/name block and menu button(s) */}
+      <div className="flex justify-between h-16 min-w-0">
+        
         {/* Left Block: Logo, PT Circle, Company Name */}
-        {/* This entire block needs to be managed to not overflow */}
-        <div className="flex items-center min-w-0"> {/* Keep min-w-0 here too */}
-
+        <div className="flex items-center min-w-0">
           {/* Inner Flex Container for Logo, PT, Name */}
-          {/* Use 'flex-nowrap' to keep items in a line and 'min-w-0' to allow shrinking */}
-          <div className="flex items-center flex-nowrap min-w-0 flex-shrink"> {/* Added flex-nowrap, flex-shrink */}
-
-            
+          <div className="flex items-center flex-nowrap min-w-0 flex-shrink">
+            {/* SVG Logo */}
             <img
               src="/local_3.svg"
               alt="Logo"
@@ -1801,33 +1796,30 @@ const Navigation = () => (
               }}
             />
 
-            {/* PT Circle - Keep size fixed */}
+            {/* PT Circle */}
             <div
-              className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" {/* Ensure circle doesn't shrink */}
+              className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
               style={{ backgroundColor: theme.primaryColor }}
             >
               <span className="text-white font-bold text-lg">PT</span>
             </div>
 
-            {/* Company Name - This is the most likely element to need space management -->
-            <!-- Use 'truncate' to prevent text overflow -->
-            <!-- 'min-w-0' on parent flex containers allows this to shrink -->
-            <!-- Potentially reduce text size on smaller screens if needed -->
+            {/* Company Name - Kept from your previous version for footer consistency, adjust as needed */}
             <span
-              className="ml-3 text-lg sm:text-xl font-bold truncate" // Slightly reduced base size (text-lg), larger on sm+
+              className="ml-3 text-lg sm:text-xl font-bold truncate" // Example size adjustment
               style={{
                 color: theme.headerBg === '#000000' || theme.headerBg === 'black' ? 'white' : theme.textColor,
               }}
             >
               {practiceInfo.name}
             </span>
-          </div>
-        </div>
+          </div> 
+          {/* --- Closing tag for the inner flex container was missing --- */}
+        </div> 
+        {/* --- Closing tag for the left block --- */}
 
-        {/* Desktop Menu - Hidden on mobile */}
-        {/* Reduce spacing between items on smaller desktop screens if needed */}
-        <div className="hidden md:flex items-center space-x-2 lg:space-x-4 xl:space-x-6"> {/* Reduced space-x */}
-          {/* Navigation Items */}
+        {/* Desktop Menu - This needs to be a sibling of the 'Left Block' div, not nested inside it */}
+        <div className="hidden md:flex items-center space-x-2 lg:space-x-4 xl:space-x-6">
           {[
             { label: 'Hlavní stránka', key: 'home' },
             { label: 'Služby', key: 'services' },
@@ -1840,8 +1832,7 @@ const Navigation = () => (
             <button
               key={item.key}
               onClick={() => setActiveSection(item.key)}
-              // Use 'whitespace-nowrap' to prevent button text from wrapping, contributing to width
-              className={`px-2 py-2 rounded-md text-sm font-medium transition-colors whitespace-nowrap`} // Added whitespace-nowrap
+              className={`px-2 py-2 rounded-md text-sm font-medium transition-colors whitespace-nowrap`}
               style={{
                 color: activeSection === item.key ? theme.primaryColor : (theme.headerBg === '#000000' || theme.headerBg === 'black' ? 'white' : theme.textColor),
                 backgroundColor: activeSection === item.key ? `${theme.primaryColor}20` : 'transparent'
@@ -1852,7 +1843,7 @@ const Navigation = () => (
           ))}
         </div>
 
-        {/* Mobile Menu Button - Always visible on small screens */}
+        {/* Mobile Menu Button */}
         <div className="md:hidden flex items-center">
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -1863,10 +1854,12 @@ const Navigation = () => (
             {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
-      </div>
-    </div>
+      </div> 
+      {/* --- Closing tag for the main flex container --- */}
+    </div> 
+    {/* --- Closing tag for the max-w-7xl container --- */}
 
-    {/* Mobile Dropdown Menu - Ensure it doesn't cause overflow */}
+    {/* Mobile Dropdown Menu - This is outside the main nav structure, which is correct */}
     {isMenuOpen && (
       <div className="md:hidden">
         <div
@@ -1874,13 +1867,11 @@ const Navigation = () => (
           style={{
             backgroundColor: theme.headerBg,
             borderTop: `1px solid ${theme.accentColor}20`,
-            // Explicitly constrain width to prevent overflow
             maxWidth: '100vw',
             marginLeft: 'auto',
             marginRight: 'auto',
           }}
         >
-          {/* Mobile Navigation Items */}
           {[
             { label: 'Hlavní stránka', key: 'home' },
             { label: 'Služby', key: 'services' },
