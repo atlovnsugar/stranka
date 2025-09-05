@@ -18,8 +18,9 @@ const App = () => {
   const enableFlowerPattern = false;
   const blueIntensity = 9;
 
-  // --- ODEBRÁNO: require.context pro obrázky ---
-  // Nahrazeno pomocnou funkcí getImageUrl níže
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [activeSection]);
 
   useEffect(() => {
     const loadData = async () => {
