@@ -637,7 +637,7 @@ const App = () => {
               className="mb-6 flex items-center text-blue-600 hover:text-blue-800"
               style={{ color: theme.primaryColor }}
             >
-              ← Zpět na blog Blog
+              ← Zpět na Blog
             </button>
             <article
               id={`article-content-${selectedArticle.id || selectedArticle.title.replace(/\s+/g, '-').toLowerCase()}`}
