@@ -637,7 +637,7 @@ const App = () => {
               className="mb-6 flex items-center text-blue-600 hover:text-blue-800"
               style={{ color: theme.primaryColor }}
             >
-              ← Back to Blog
+              ← Zpět na blog Blog
             </button>
             <article
               id={`article-content-${selectedArticle.id || selectedArticle.title.replace(/\s+/g, '-').toLowerCase()}`}
@@ -1111,6 +1111,7 @@ const GalleryModal = ({ images, initialImage, onClose, getImageUrl }) => {
             <Services />
             <About />
             <HoursAndLocation />
+            <Blog />
           </>
         );
       case 'services':
@@ -1790,7 +1791,7 @@ const Navigation = () => (
             <img
               src="/local_3.svg"
               alt="Logo"
-              className="mr-2 w-10 h-10 flex-shrink-0"
+              className="inline-block align-middle mr-2 w-14 h-14 flex-shrink-0"
               style={{
                 filter: 'brightness(0) saturate(100%) invert(19%) sepia(84%) saturate(1916%) hue-rotate(204deg) brightness(95%) contrast(92%)',
               }}
