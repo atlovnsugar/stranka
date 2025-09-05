@@ -546,7 +546,7 @@ const App = () => {
                     key={index}
                     src={imageUrl}
                     alt={`Hero Background ${index + 1}`}
-                    className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${index === currentHeroImageIndex ? 'opacity-50' : 'opacity-0'}`}
+                    className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${index === currentHeroImageIndex ? 'opacity-60' : 'opacity-0'}`}
                   />
                 );
               })}
