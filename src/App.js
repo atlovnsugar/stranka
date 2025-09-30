@@ -709,7 +709,7 @@ const App = () => {
               className="text-lg"
               style={{ color: `${theme.textColor}cc` }}
             >
-              {practiceInfo.blogDescription || 'Sem něco napsat'}
+              {practiceInfo.blogDescription || ''}
             </p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -802,7 +802,7 @@ const App = () => {
               className="text-lg max-w-3xl mx-auto"
               style={{ color: `${theme.textColor}cc` }}
             >
-              {practiceInfo.aboutDescription || 'Sem něco napsat'}
+              {practiceInfo.aboutDescription || ''}
             </p>
           </div>
           <div
@@ -1162,7 +1162,7 @@ const GalleryModal = ({ images, initialImage, onClose, getImageUrl }) => {
             className="text-lg max-w-2xl mx-auto"
             style={{ color: `${theme.textColor}cc` }}
           >
-            {practiceInfo.servicesDescription || 'Sem něco napsat o službách. Nebo o něčem jiném.'}
+            {practiceInfo.servicesDescription || ''}
           </p>
         </div>
         <div className="grid md:grid-cols-2 gap-8">
@@ -1307,7 +1307,7 @@ const GalleryModal = ({ images, initialImage, onClose, getImageUrl }) => {
             className="text-lg"
             style={{ color: `${theme.textColor}cc` }}
           >
-            {practiceInfo.hoursLocationDescription || 'Něco něco něco'}
+            {practiceInfo.hoursLocationDescription || ''}
           </p>
         </div>
         <div className="grid lg:grid-cols-2 gap-12">
@@ -1597,7 +1597,7 @@ const GalleryModal = ({ images, initialImage, onClose, getImageUrl }) => {
             className="text-lg"
             style={{ color: `${theme.textColor}cc` }}
           >
-            {practiceInfo.contactDescription || 'Něco sem napsat'}
+            {practiceInfo.contactDescription || ''}
           </p>
         </div>
         <div className="grid lg:grid-cols-2 gap-12">
