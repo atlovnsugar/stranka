@@ -1110,6 +1110,24 @@ const GalleryModal = ({ images, initialImage, onClose, getImageUrl }) => {
         return (
           <>
             <Hero />
+             <div
+                className="py-4" // Nastaví vertikální odsazení. Můžete upravit (např. py-6, py-8) podle potřeby.
+                style={{
+                  backgroundColor: theme.backgroundColor, // Použije aktuální barvu pozadí motivu
+                  ...getFlowerPattern(), // Pokud chcete, aby se vzor zobrazil i zde (pokud je povolen)
+                }}
+              >
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"> {/* Stejné jako v jiných sekcích */}
+                  <div className="text-center"> {/* Centrování textu */}
+                    <p
+                      className="text-lg md:text-xl font-medium italic" // Základní styl pro tagline. Upravte podle potřeby (např. text-xl, font-semibold, normal-case).
+                      style={{ color: `${theme.textColor}cc` }} // Použije barvu textu motivu s průhledností (cc = 80% opacity). Můžete odstranit 'cc' pro plnou neprůhlednost.
+                    >
+                      {practiceInfo.tagline || 'Default Tagline'} {/* Zobrazí tagline z practiceInfo, nebo výchozí text, pokud není tagline nastavena */}
+                    </p>
+                  </div>
+                </div>
+              </div>
             <Services />
             <About />
             <HoursAndLocation />
