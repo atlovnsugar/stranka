@@ -619,14 +619,6 @@ const App = () => {
             </button>
           </div>
         </div>
-        <div>
-          <p
-            className="text-xl md:text-2xl mb-8 max-w-3xl font-bold mx-auto"
-            style={{ color: `${theme.textColor}cc` }}
-          >
-            {practiceInfo.tagline || ''}
-          </p>
-        </div>
       </div>
       
     );
