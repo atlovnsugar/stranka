@@ -1740,45 +1740,46 @@ const GalleryModal = ({ images, initialImage, onClose, getImageUrl }) => {
             >
               {practiceInfo.bookingInfo || 'Pro objednání stačí zavolat na naše telefonní číslo a domluvit si termín. První návštěva trvá hodinu a následné 30 minut.'}
             </p>
-            <div className="mt-6 flex justify-center"> 
-              <div className="border-2 border-dashed border-gray-400 rounded-lg p-2"  
-                   style={{ borderColor: theme.primaryColor }}> 
-                <img
-                  src="/images/QR.png" 
-                  alt="QR kód pro objednání"
-                  className="w-32 h-32 object-contain" 
-                />
+            <div className="flex flex-col md:flex-row gap-6 items-start">
+              <div className="space-y-4">
+                <div className="flex items-center">
+                  <Phone
+                    className="mr-3"
+                    size={20}
+                    style={{ color: theme.primaryColor }}
+                  />
+                  <span
+                    className="font-medium"
+                    style={{ color: theme.textColor }}
+                  >
+                    {practiceInfo.phone}
+                  </span>
+                </div>
+                <div className="flex items-center">
+                  <Mail
+                    className="mr-3"
+                    size={20}
+                    style={{ color: theme.primaryColor }}
+                  />
+                  <span
+                    className="font-medium"
+                    style={{ color: theme.textColor }}
+                  >
+                    {practiceInfo.email}
+                  </span>
+                </div>
+              </div>
+              <div className="w-fit md:ml-auto mt-6 md:mt-0 flex justify-center md:justify-end"> 
+                <div className="border-2 border-dashed border-gray-400 rounded-lg p-2"  
+                    style={{ borderColor: theme.primaryColor }}> 
+                  <img
+                    src="/images/QR.png" 
+                    alt="QR kód pro objednání"
+                    className="w-32 h-32 object-contain" 
+                  />
+                </div>
               </div>
             </div>
-            <div className="space-y-4">
-              <div className="flex items-center">
-                <Phone
-                  className="mr-3"
-                  size={20}
-                  style={{ color: theme.primaryColor }}
-                />
-                <span
-                  className="font-medium"
-                  style={{ color: theme.textColor }}
-                >
-                  {practiceInfo.phone}
-                </span>
-              </div>
-              <div className="flex items-center">
-                <Mail
-                  className="mr-3"
-                  size={20}
-                  style={{ color: theme.primaryColor }}
-                />
-                <span
-                  className="font-medium"
-                  style={{ color: theme.textColor }}
-                >
-                  {practiceInfo.email}
-                </span>
-              </div>
-            </div>
-            
             <div className="mt-8">
               <h4
                 className="text-lg font-semibold mb-4"
