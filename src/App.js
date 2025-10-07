@@ -2038,14 +2038,23 @@ const Navigation = () => (
                   <p>{practiceInfo.email}</p>
                   <p>IČO: 75086301</p>
                 </div>
-                <div className="flex justify-end"> {/* Pravá část: QR kód */}
-                  <div className="border border-gray-600 rounded p-1"
-                       style={{ borderColor: theme.primaryColor }}>
-                    <img
-                      src="/images/QR.png" 
-                      alt="QR kód pro kontakt"
-                      className="w-16 h-16 object-contain" 
-                    />
+                                <div className="flex justify-end"> {/* Pravá část: QR kód */}
+                  {/* Nový div pro pozadí */}
+                  <div
+                    className="p-2 rounded" // Odsazení a zaoblení rohů pro pozadí
+                    style={{
+                      backgroundColor: theme.backgroundColor, // Použije barvu pozadí hlavní stránky
+                      ...getFlowerPattern()                   // Pokud funkce getFlowerPattern existuje a je dostupná, použije i vzorek
+                    }}
+                  >
+                    <div className="border border-gray-600 rounded p-1"
+                         style={{ borderColor: theme.primaryColor }}>
+                      <img
+                        src="/images/QR.png" // Uprav cestu podle skutečného umístění a názvu souboru
+                        alt="QR kód pro kontakt"
+                        className="w-32 h-32 object-contain" // Uprav velikost podle potřeby
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
