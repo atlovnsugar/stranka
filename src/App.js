@@ -2022,32 +2022,34 @@ const Navigation = () => (
                 ))}
               </ul>
             </div>
-            <div>
+                        <div> {/* Toto je začátek třetího sloupce v Footeru */}
               <h3
                 className="text-lg font-semibold mb-4"
                 style={{ color: 'white' }}
               >
                 Kontaktní informace
               </h3>
-              <div className="space-y-2" style={{ color: '#cbd5e1' }}>
-                <p>{practiceInfo.address}</p>
-                <p>{practiceInfo.city}</p>
-                <p>{practiceInfo.phone}</p>
-                <p>{practiceInfo.email}</p>
-                <p>IČO: 75086301</p>
+              {/* Nový layout uvnitř sloupce - flexbox nebo grid */}
+              <div className="flex flex-col md:flex-row md:items-start gap-4"> {/* Flexbox: vertikálně na mobilu, horizontálně na větších obrazovkách */}
+                <div className="space-y-2 md:space-y-2 flex-1" style={{ color: '#cbd5e1' }}> {/* Levá část: kontakty */}
+                  <p>{practiceInfo.address}</p>
+                  <p>{practiceInfo.city}</p>
+                  <p>{practiceInfo.phone}</p>
+                  <p>{practiceInfo.email}</p>
+                  <p>IČO: 75086301</p>
+                </div>
+                <div className="flex justify-end"> {/* Pravá část: QR kód */}
+                  <div className="border border-gray-600 rounded p-1"
+                       style={{ borderColor: theme.primaryColor }}>
+                    <img
+                      src="/images/QR.png" 
+                      alt="QR kód pro kontakt"
+                      className="w-16 h-16 object-contain" 
+                    />
+                  </div>
+                </div>
               </div>
-              
-            </div>
-            <div className="mt-4 flex justify-end"> 
-                 <div className="border border-gray-600 rounded p-1" 
-                      style={{ borderColor: theme.primaryColor }}>
-                   <img
-                     src="/images/QR.png" 
-                     alt="QR kód pro kontakt"
-                     className="w-16 h-16 object-contain" 
-                   />
-                 </div>
-               </div>
+            </div> {/* Toto je konec třetího sloupce */}
           </div>
           <div
             className="border-t mt-8 pt-8 text-center"
