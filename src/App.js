@@ -1740,6 +1740,16 @@ const GalleryModal = ({ images, initialImage, onClose, getImageUrl }) => {
             >
               {practiceInfo.bookingInfo || 'Pro objednání stačí zavolat na naše telefonní číslo a domluvit si termín. První návštěva trvá hodinu a následné 30 minut.'}
             </p>
+            <div className="mt-6 flex justify-center"> {/* Flex container pro vycentrování */}
+              <div className="border-2 border-dashed border-gray-400 rounded-lg p-2" // Jednoduchý rámček a padding
+                   style={{ borderColor: theme.primaryColor }}> // Rámček použije primární barvu motivu
+                <img
+                  src="/images/QR.png" // Uprav cestu podle skutečného umístění a názvu souboru
+                  alt="QR kód pro objednání"
+                  className="w-32 h-32 object-contain" // Uprav velikost podle potřeby (např. w-32 = 8rem, h-32 = 8rem)
+                />
+              </div>
+            </div>
             <div className="space-y-4">
               <div className="flex items-center">
                 <Phone
@@ -1768,6 +1778,7 @@ const GalleryModal = ({ images, initialImage, onClose, getImageUrl }) => {
                 </span>
               </div>
             </div>
+            
             <div className="mt-8">
               <h4
                 className="text-lg font-semibold mb-4"
@@ -2024,6 +2035,16 @@ const Navigation = () => (
                 <p>{practiceInfo.email}</p>
                 <p>IČO: 75086301</p>
               </div>
+              <div className="mt-4 flex justify-end"> {/* Flex container pro zarovnání vpravo */}
+                 <div className="border border-gray-600 rounded p-1" // Jednoduchý rámček a padding
+                      style={{ borderColor: theme.primaryColor }}>
+                   <img
+                     src="/images/QR.png" // Upravená cesta podle skutečného umístění a názvu souboru
+                     alt="QR kód pro kontakt"
+                     className="w-16 h-16 object-contain" // Menší velikost pro footer (např. w-16 = 4rem, h-16 = 4rem)
+                   />
+                 </div>
+               </div>
             </div>
           </div>
           <div
