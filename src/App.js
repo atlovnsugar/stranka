@@ -2036,7 +2036,9 @@ const Navigation = () => (
                 <p>{practiceInfo.email}</p>
                 <p>IČO: 75086301</p>
               </div>
-              <div className="mt-4 flex justify-end"> 
+              
+            </div>
+            <div className="mt-4 flex justify-end"> 
                  <div className="border border-gray-600 rounded p-1" 
                       style={{ borderColor: theme.primaryColor }}>
                    <img
@@ -2046,7 +2048,6 @@ const Navigation = () => (
                    />
                  </div>
                </div>
-            </div>
           </div>
           <div
             className="border-t mt-8 pt-8 text-center"
