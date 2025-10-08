@@ -2047,7 +2047,7 @@ const Navigation = () => (
                       ...getFlowerPattern()                   // Pokud funkce getFlowerPattern existuje a je dostupná, použije i vzorek
                     }}
                   >
-                    <div className="border border-gray-600 rounded p-1"
+                    <div className="border border-gray-600 rounded p-2"
                          style={{ borderColor: theme.primaryColor }}>
                       <img
                         src="/images/QR.png" // Uprav cestu podle skutečného umístění a názvu souboru
